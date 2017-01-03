@@ -1,0 +1,33 @@
+$primary-color : #fff;
+$secondary-color: #fff;
+$grey-dark: #fff;
+$grey: #fff;
+$grey-light: #fff;
+
+// for test
+.red {
+    border: 1px solid red;
+}
+
+html {
+    font-size: 16px;
+    font-family: 'Lemonada', cursive;
+}
+
+// this is for the holyGrail layout
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+
+    .wrapper {
+        display: flex;
+        flex: 1;
+        .sidebar {
+            flex: 0 0 16rem;
+        }
+        .content {
+            flex-grow:1;
+        }
+    }
+}

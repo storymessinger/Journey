@@ -1,0 +1,1 @@
+.red{border:1px solid red}html{font-size:16px;font-family:'Lemonada', cursive}body{display:flex;min-height:100vh;flex-direction:column}body .wrapper{display:flex;flex:1}body .wrapper .sidebar{flex:0 0 16rem}body .wrapper .content{flex-grow:1}
