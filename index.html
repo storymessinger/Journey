@@ -10,35 +10,17 @@
 </head>
 
 <body>
-    <!-- <div data-bind="with: currentCat">
-        <ul id="cat-list"></ul>
-        <div id="cat">
-
-            <h2 id="cat-name" data-bind="text: name"></h2>
-            <h3 data-bind="text: level"></h3>
-            <div id="cat-count" data-bind="text: clickCount"></div>
-            <img id="cat-img" src="" alt="cute cat" data-bind="click: $parent.incrementCounter, attr: {src: imgSrc}">
-
-        </div>
-
-        <div data-bind="foreach: nickname">
-            <div data-bind="text: nick"></div>
-        </div>
-    </div>
-
-    <form data-bind="foreach: catList">
-        <button data-bind="text: name, click: $parent.changeCat" type="button"></button>
-    </form> -->
-
     <div class="wrapper">
-        <sidebar class="sidebar red">
-            <ul data-bind="foreach: maplist">
+        <button data-bind="click: sidebarFold" type="button" class="sidebar_btn red">Fold it</button>
+        <sidebar class="sidebar">
+            <ul data-bind="foreach: place_list">
                 <li data-bind="text: title"></li>
                 <!-- <p data-bind="text: location"></p> -->
             </ul>
         </sidebar>
         <div class="content" id="map">
         </div>
+        <div class="make_dimmer"></div>
     </div>
 
     <script src="js/lib/jquery.min.js"></script>
@@ -46,7 +28,8 @@
     <script src="js/lib/knockout-3.4.1.js"></script>
     <script src="js/app.js"></script>
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&v=3&callback=initMap">
+        src=
+        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry&v=3&callback=initMap">
     </script>
 
 </body>
