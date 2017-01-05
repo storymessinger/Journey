@@ -1,21 +1,21 @@
 var init_places = [{
-    title: 'Houzenji',
+    title: 'Big Ben',
     location: {
-        lat: 34.667895,
-        lng: 135.502611
+        lat: 51.500650,
+        lng: -0.122075
     }
 }, {
-    title: 'Ichiran',
+    title: 'Westminster',
     location: {
-        lat: 34.6685234,
-        lng: 135.503199
+        lat: 51.499531,
+        lng: -0.123856
     }
 
 }, {
-    title: 'Menyateru',
+    title: 'RCA',
     location: {
-        lat: 34.675900,
-        lng: 135.504579
+        lat: 51.501135,
+        lng: -0.177372
     }
 }];
 
@@ -23,6 +23,37 @@ var init_places = [{
 (function() {
     'use strict';
 
+	var ENTER_KEY = 13;
+
+	// A factory function we can use to create binding handlers for specific
+	// keycodes.
+	function keyhandlerBindingFactory(keyCode) {
+		return {
+			init: function (element, valueAccessor, allBindingsAccessor, data, bindingContext) {
+				var wrappedHandler, newValueAccessor;
+
+				// wrap the handler with a check for the enter key
+				wrappedHandler = function (data, event) {
+					if (event.keyCode === keyCode) {
+						valueAccessor().call(this, data, event);
+					}
+				};
+
+				// create a valueAccessor with the options that we would want to pass to the event binding
+				newValueAccessor = function () {
+					return {
+						keyup: wrappedHandler
+					};
+				};
+
+				// call the real event binding's init function
+				ko.bindingHandlers.event.init(element, newValueAccessor, allBindingsAccessor, data, bindingContext);
+			}
+		};
+	}
+
+	// a custom binding to handle the enter key
+	ko.bindingHandlers.enterKey = keyhandlerBindingFactory(ENTER_KEY);
 
     // represents simple place item
     var Place_list = function(data) {
@@ -46,6 +77,15 @@ var init_places = [{
             $sidebar.toggleClass('unfolded');
             //-- if youre to target the custom element, you have to sue event.target
             $(event.target).toggleClass('move_right');
+        };
+
+        // data-bind with zoom-to-area-text
+        this.zoom_area = function() {
+            // console.log(event.target.value);
+
+            // this zooms to area
+            zoomToArea();
+
         };
     };
 
@@ -197,14 +237,17 @@ function initMap() {
         mapTypeControl: false
 
     });
+    // This autocomplete is for use in the geocoder entry box.
+    var zoomAutocomplete = new google.maps.places.Autocomplete(
+        document.getElementById('zoom-to-area-text'));
+    //Bias the boundaries within the map for the zoom to area text.
+    zoomAutocomplete.bindTo('bounds', map);
 
     var largeInfowindow = new google.maps.InfoWindow();
 
     // This makes bounding easier
     var bounds = new google.maps.LatLngBounds();
 
-    var defaultIcon = makeMarkerIcon('#F1C40F');
-    var highlightedIcon = makeMarkerIcon('#F39C12');
 
     // The following group uses the location array to create an array of markers on initialize.
     for (var i = 0; i < init_places.length; i++) {
@@ -212,37 +255,42 @@ function initMap() {
         var position = init_places[i].location;
         var title = init_places[i].title;
         // Create a marker per location, and put into markers array.
-        var marker = new google.maps.Marker({
-            map: map,
-            position: position,
-            title: title,
-            animation: google.maps.Animation.DROP,
-            id: i
-        });
-        // Push the marker to our array of markers.
-        markers.push(marker);
-        // Create an onclick event to open an infowindow at each marker.
-        marker.addListener('click', function() {
-            populateInfoWindow(this, largeInfowindow);
-        });
+        markMarkers(position, title, i);
 
-        // not working
-        // //Two event listeners - one for mouseover, one for mouseout,
-        // //to change the colors back and forth.
-        // marker.addListener('mouseover', function() {
-        //     this.setIcon(highlightedIcon);
-        // });
-        // marker.addListener('mouseout', function() {
-        //     this.setIcon(defaultIcon);
-        // });
         //Extend the boundaries of the map
         bounds.extend(markers[i].position);
     }
+
+    document.getElementById('zoom-to-area').addEventListener('click', function() {
+        zoomToArea();
+    });
+
+
+
+    // make map fit into the boundaries
     map.fitBounds(bounds);
 }
 
+// marking the Markers with added functionalty of Event-trigger
+function markMarkers(location, title, order) {
+    var largeInfowindow = new google.maps.InfoWindow();
+    var marker = new google.maps.Marker({
+        map: map,
+        position: location,
+        title: title,
+        animation: google.maps.Animation.DROP,
+        id: order
+    });
+    // Push the marker to our array of markers.
+    markers.push(marker);
+    // Create an onclick event to open an infowindow at each marker.
+    marker.addListener('click', function() {
+        var self = this;
+        populateInfoWindow(self, largeInfowindow);
+    });
+}
+
 function populateInfoWindow(marker, infowindow) {
-    console.log('aaaaaaaaaaaaaaaaaaaa');
     // Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
         // Clear the infowindow content to give the streetview time to load.
@@ -262,7 +310,6 @@ function populateInfoWindow(marker, infowindow) {
                 var nearStreetViewLocation = data.location.latLng;
                 var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
                 infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
-                console.log('2aaaaaaaaaaaaaaaaaaaa');
                 var panoramaOptions = {
                     position: nearStreetViewLocation,
                     pov: {
@@ -298,3 +345,43 @@ function makeMarkerIcon(markerColor) {
         new google.maps.Size(21, 34));
     return markerImage;
 }
+
+    // This function takes the input value in the find nearby area text input
+    // locates it, and then zooms into that area. This is so that the user can
+    // show all listings, then decide to focus on one area of the map.
+    function zoomToArea() {
+        // Initialize the geocoder.
+        var geocoder = new google.maps.Geocoder();
+        // Get the address or place that the user entered.
+        var address = document.getElementById('zoom-to-area-text').value;
+        // Make sure the address isn't blank.
+        if (!address){
+            window.alert('You must enter an area, or address.');
+        } else {
+            // Geocode the address/area entered to get the center. Then, center the map
+            // on it and zoom in
+            geocoder.geocode({
+                address: address,
+                componentRestrictions: {
+                    // locality: 'Japan'
+                }
+            }, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    // Center the map to the FIRST result
+                    map.setCenter(results[0].geometry.location);
+                    // For every result found, markers are place on top
+                    results.forEach(function(result) {
+                        console.log(result);
+                        var location = result.geometry.location;
+                        var title = result.address_components[0].short_name;
+                        markMarkers(location, title);
+                    });
+                    // console.log(results[0]);
+                    map.setZoom(15);
+                } else {
+                    window.alert('We could not find that location - try entering a more' +
+                        ' specific place.');
+                }
+            });
+        }
+    }

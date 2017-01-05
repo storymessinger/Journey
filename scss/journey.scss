@@ -1,12 +1,26 @@
-$primary-color : #74daad;
+$primary-color : #74daad; // green
 $primary-color-dark : #4eb185;
-$secondary-color : #F1C40F; // Sunflower yellow
-$secondary-color-dark : #F39C12;
+$secondary-color : #FFE781; // yellow
+$secondary-color-dark : #FFD836;
 $black: #3e3632;
 $grey-dark: #7a7e7e;
 $grey: #e8e9e9;
 $grey-light: #f7f7f7;
 $white: #ffffff;
+
+// placeholder color change
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: $grey-light;
+}
+::-moz-placeholder { /* Firefox 19+ */
+    color: $grey-light;
+}
+:-ms-input-placeholder { /* IE 10+ */
+    color: $grey-light;
+}
+:-moz-placeholder { /* Firefox 18- */
+    color: $grey-light;
+}
 
 /// Computes a top-shadow for a card effect.
 /// @param {Number} $depth - depth level
@@ -69,6 +83,16 @@ body {
         }
         .content {
             flex-grow:1;
+            display: flex;
+            .zoom-search {
+                z-index: 1000;
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+            }
+            .google-map {
+                flex-grow: 1;
+            }
         }
     }
 }
@@ -76,7 +100,7 @@ body {
 // sidebar design
 .sidebar {
     background-color: $primary-color;
-    border-right: 10px solid $primary-color-dark;
+    border-right: 10px solid $secondary-color;
     color: $grey-light;
     @include card(3);
     ul {
@@ -130,6 +154,50 @@ body {
         // this makes one-way transition on sidebar_btn
         transition: all 0.8s ease-out;
     }
+}
+
+// zoom search design
+.zoom-search {
+    background-color: $primary-color;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    width: 500px;
+
+    // vertically align inputs
+    display:flex;
+
+    // input border none, google style?
+    #zoom-to-area-text {
+        border: none;
+        background: transparent;
+        color: $white;
+
+        margin-right: 1rem;
+    }
+    //to remove focus effects
+    input:focus {
+        outline:none;
+    }
+}
+
+
+// tutorial
+#zoom-to-area-text {
+    position: relative;
+    width: 60%;
+    margin-left: 1rem;
+}
+
+#zoom-to-area {
+    width: 24%;
+}
+
+// google maps related
+#pano {
+    width: 200px;
+    height: 200px;
+}
+
     // .make_dimmer {
     //     transition: all 0.3s ease;
     //     display:none;
@@ -145,14 +213,3 @@ body {
     //     width:100%;
     //     height:100%;
     // }
-}
-
-
-
-
-
-// google maps related
-#pano {
-    width: 200px;
-    height: 200px;
-}
