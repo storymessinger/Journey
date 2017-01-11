@@ -19,6 +19,19 @@
                 <li class="route" data-bind="text: title"></li>
                 <!-- <p data-bind="text: location"></p> -->
             </ul>
+
+            <form data-bind="submit: addItem" id="addItem">
+                New item:
+                <input data-bind='value: itemToAdd, valueUpdate: "afterkeydown"' />
+                <button type="submit" data-bind="enable: itemToAdd().length > 0">Add</button>
+                <p>Your items:</p>
+                <ul data-bind="foreach: items">
+                    <li class="route" data-bind="text: name">
+                <!-- <select multiple="multiple" width="50" data-bind="options: items"> </select> -->
+                </ul>
+                <button type="button" data-bind="click: lastItemDelete"> delete </button>
+            </form>
+
         </sidebar>
         <div class="content">
             <div class="zoom-search">

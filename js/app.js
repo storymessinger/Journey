@@ -1,35 +1,65 @@
-var init_routes = {
-    london_route01 : [
-        {
-            title: 'Big Ben',
-            location: {
-                lat: 51.500650,
-                lng: -0.122075
+var init_routes = [
+    {
+        name: 'london_route01',
+        routePoints: [
+            {
+                title: 'Big Ben',
+                location: {
+                    lat: 51.500650,
+                    lng: -0.122075
+                }
+            }, {
+                title: 'Westminster',
+                location: {
+                    lat: 51.499531,
+                    lng: -0.123856
+                }
+            }, {
+                title: 'RCA',
+                location: {
+                    lat: 51.501135,
+                    lng: -0.177372
+                }
+            }, {
+                title: 'US Embassy, London',
+                location: {
+                    lat: 51.51251,
+                    lng: -0.1528990
+                }
             }
-
-        }, {
-            title: 'Westminster',
-            location: {
-                lat: 51.499531,
-                lng: -0.123856
+        ]
+    },
+    {
+        name: 'london_route02',
+        routePoints: [
+            {
+                title: 'Big Ben',
+                location: {
+                    lat: 51.500650,
+                    lng: -0.122075
+                }
+            }, {
+                title: 'Westminster',
+                location: {
+                    lat: 51.499531,
+                    lng: -0.123856
+                }
+            }, {
+                title: 'RCA',
+                location: {
+                    lat: 51.501135,
+                    lng: -0.177372
+                }
+            }, {
+                title: 'US Embassy, London',
+                location: {
+                    lat: 51.51251,
+                    lng: -0.1528990
+                }
             }
-
-        }, {
-            title: 'RCA',
-            location: {
-                lat: 51.501135,
-                lng: -0.177372
-            }
-        }, {
-            title: 'US Embassy, London',
-            location: {
-                lat: 51.51251,
-                lng: -0.1528990
-            }
-        }
-    ],
-};
-
+        ]
+    },
+];
 
 var init_places = [{
     title: 'Big Ben',
@@ -97,7 +127,7 @@ var init_places = [{
         this.location = data.location;
     };
 
-    var ViewModel = function() {
+    var ViewModel = function(routeData) {
         //important trick!! self!!
         var self = this;
 
@@ -123,11 +153,28 @@ var init_places = [{
             zoomToArea();
 
         };
+
+        //
+        this.items = ko.observableArray(routeData);
+        this.itemToAdd = ko.observable("");
+        this.addItem = function() {
+            if (self.itemToAdd() !== "") {
+                var routeItem = {
+                    name: self.itemToAdd(),
+                    routePoints: []
+                };
+                self.items.push(routeItem); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
+                self.itemToAdd(""); // Clears the text box, because it's bound to the "itemToAdd" observable
+            }
+        };
+        this.lastItemDelete = function(){
+            self.items.pop();
+        };
     };
 
     // Start binding with KnockoutJS
     // bind a new instance of our viewModel to the page
-    var viewModel = new ViewModel();
+    var viewModel = new ViewModel(init_routes);
     ko.applyBindings(viewModel);
 }());
 
