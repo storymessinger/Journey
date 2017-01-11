@@ -1,9 +1,19 @@
+var init_routes = [{
+
+
+
+
+
+}];
+
+
 var init_places = [{
     title: 'Big Ben',
     location: {
         lat: 51.500650,
         lng: -0.122075
     }
+
 }, {
     title: 'Westminster',
     location: {
@@ -66,9 +76,9 @@ var init_places = [{
         var self = this;
 
         // getting the places into the map list
-        this.place_list = ko.observableArray([]);
+        this.sitePoints = ko.observableArray([]);
         _.each(init_places, function(place) {
-            self.place_list.push(new place_list(place));
+            self.sitePoints.push(new place_list(place));
         });
 
         // bind the event to the sidebar_btn
@@ -93,6 +103,12 @@ var init_places = [{
     // bind a new instance of our viewModel to the page
     var viewModel = new ViewModel(Place_list || []);
     ko.applyBindings(viewModel);
+
+    var testing = {};
+
+    testing._ViewModel = ViewModel;
+
+    return testing;
 
 }());
 
@@ -254,14 +270,16 @@ function initMap() {
         // Get the position from the location array.
         var position = init_places[i].location;
         var title = init_places[i].title;
-        // Create a marker per location, and put into markers array.
-        markMarkers(position, title, i);
+        //** Create a marker per location, and put into markers array.
+        markMarkers(position, title, i, largeInfowindow);
 
         //Extend the boundaries of the map
         bounds.extend(markers[i].position);
     }
 
+    // event trigger on the zoom-to-area button
     document.getElementById('zoom-to-area').addEventListener('click', function() {
+        //** Zoom to the searched area
         zoomToArea();
     });
 
@@ -270,26 +288,41 @@ function initMap() {
     // make map fit into the boundaries
     map.fitBounds(bounds);
 }
+// initMap ends here
+
 
 // marking the Markers with added functionalty of Event-trigger
-function markMarkers(location, title, order) {
-    var largeInfowindow = new google.maps.InfoWindow();
+function markMarkers(location, title, order, Infowindow) {
+    var thisInfowindow = Infowindow;
+    var markerImage = {
+       url: 'public/img/marker.png',
+       // This marker is 20 pixels wide by 32 pixels high.
+       size: new google.maps.Size(26, 34),
+       // The origin for this image is (0, 0).
+       origin: new google.maps.Point(0, 0),
+       // The anchor for this image is the base of the flagpole at (0, 32).
+       anchor: new google.maps.Point(0, 32)
+     };
     var marker = new google.maps.Marker({
         map: map,
         position: location,
         title: title,
         animation: google.maps.Animation.DROP,
-        id: order
+        id: order,
+        icon: markerImage
     });
     // Push the marker to our array of markers.
     markers.push(marker);
     // Create an onclick event to open an infowindow at each marker.
     marker.addListener('click', function() {
         var self = this;
-        populateInfoWindow(self, largeInfowindow);
+        populateInfoWindow(self, thisInfowindow);
     });
 }
 
+// This function populates the infowindow when the marker is clicked. We'll only allow
+// one infowindow which will open at the marker that is clicked, and populate based
+// on that markers position.
 function populateInfoWindow(marker, infowindow) {
     // Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
@@ -332,56 +365,48 @@ function populateInfoWindow(marker, infowindow) {
     }
 }
 
-// This function takes in a COLOR, and then creates a new marker
-// icon of that color. The icon will be 21 px wide by 34 high, have an origin
-// of 0, 0 and be anchored at 10, 34).
-function makeMarkerIcon(markerColor) {
-    var markerImage = new google.maps.MarkerImage(
-        'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor +
-        '|40|_|%E2%80%A2',
-        new google.maps.Size(21, 34),
-        new google.maps.Point(0, 0),
-        new google.maps.Point(10, 34),
-        new google.maps.Size(21, 34));
-    return markerImage;
+// This function takes the input value in the find nearby area text input
+// locates it, and then zooms into that area. This is so that the user can
+// show all listings, then decide to focus on one area of the map.
+function zoomToArea() {
+    // Initialize the geocoder.
+    var geocoder = new google.maps.Geocoder();
+    // Get the address or place that the user entered.
+    var address = document.getElementById('zoom-to-area-text').value;
+    // Make sure the address isn't blank.
+    if (!address){
+        window.alert('You must enter an area, or address.');
+    } else {
+        // Geocode the address/area entered to get the center. Then, center the map
+        // on it and zoom in
+        geocoder.geocode({
+            address: address,
+            componentRestrictions: {
+                // locality: 'Japan'
+            }
+        }, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                // Center the map to the FIRST result
+                map.setCenter(results[0].geometry.location);
+                // For every result found, markers are place on top
+                results.forEach(function(result) {
+                    console.log(result);
+                    var location = result.geometry.location;
+                    var title = result.address_components[0].short_name;
+                    markMarkers(location, title);
+                });
+                // console.log(results[0]);
+                map.setZoom(15);
+            } else {
+                window.alert('We could not find that location - try entering a more' +
+                    ' specific place.');
+            }
+        });
+    }
 }
 
-    // This function takes the input value in the find nearby area text input
-    // locates it, and then zooms into that area. This is so that the user can
-    // show all listings, then decide to focus on one area of the map.
-    function zoomToArea() {
-        // Initialize the geocoder.
-        var geocoder = new google.maps.Geocoder();
-        // Get the address or place that the user entered.
-        var address = document.getElementById('zoom-to-area-text').value;
-        // Make sure the address isn't blank.
-        if (!address){
-            window.alert('You must enter an area, or address.');
-        } else {
-            // Geocode the address/area entered to get the center. Then, center the map
-            // on it and zoom in
-            geocoder.geocode({
-                address: address,
-                componentRestrictions: {
-                    // locality: 'Japan'
-                }
-            }, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    // Center the map to the FIRST result
-                    map.setCenter(results[0].geometry.location);
-                    // For every result found, markers are place on top
-                    results.forEach(function(result) {
-                        console.log(result);
-                        var location = result.geometry.location;
-                        var title = result.address_components[0].short_name;
-                        markMarkers(location, title);
-                    });
-                    // console.log(results[0]);
-                    map.setZoom(15);
-                } else {
-                    window.alert('We could not find that location - try entering a more' +
-                        ' specific place.');
-                }
-            });
-        }
-    }
+// $.ajax({
+//     url: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry,places&v=3&callback=initMap',
+//     dataType: 'script',
+//     cache: true, // otherwise will get fresh copy every page load
+// });

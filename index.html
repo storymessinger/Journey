@@ -8,14 +8,15 @@
     <link href="https://fonts.googleapis.com/css?family=Lemonada:300,400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="scss/normalize.css">
     <link rel="stylesheet" href="scss/journey.min.css">
+
 </head>
 
 <body>
     <div class="wrapper">
         <button data-bind="click: sidebarFold" type="button" class="sidebar_btn red">Fold it</button>
         <sidebar class="sidebar">
-            <ul data-bind="foreach: place_list">
-                <li data-bind="text: title"></li>
+            <ul data-bind="foreach: sitePoints">
+                <li class="route" data-bind="text: title"></li>
                 <!-- <p data-bind="text: location"></p> -->
             </ul>
         </sidebar>
@@ -27,7 +28,6 @@
             </div>
             <div class="google-map" id="map"></div>
         </div>
-        <div class="make_dimmer"></div>
     </div>
 
     <script src="js/lib/jquery.min.js"></script>
