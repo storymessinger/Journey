@@ -3,25 +3,25 @@ var init_routes = [
         name: 'london_route01',
         routePoints: [
             {
-                title: 'Big Ben',
+                // title: 'Big Ben',
                 location: {
                     lat: 51.500650,
                     lng: -0.122075
                 }
             }, {
-                title: 'Westminster',
+                // title: 'Westminster',
                 location: {
                     lat: 51.499531,
                     lng: -0.123856
                 }
             }, {
-                title: 'RCA',
+                // title: 'RCA',
                 location: {
                     lat: 51.501135,
                     lng: -0.177372
                 }
             }, {
-                title: 'US Embassy, London',
+                // title: 'US Embassy, London',
                 location: {
                     lat: 51.51251,
                     lng: -0.1528990
@@ -33,25 +33,21 @@ var init_routes = [
         name: 'london_route02',
         routePoints: [
             {
-                title: 'Big Ben',
                 location: {
-                    lat: 51.500650,
+                    lat: 53.500650,
                     lng: -0.122075
                 }
             }, {
-                title: 'Westminster',
                 location: {
                     lat: 51.499531,
                     lng: -0.123856
                 }
             }, {
-                title: 'RCA',
                 location: {
                     lat: 51.501135,
                     lng: -0.177372
                 }
             }, {
-                title: 'US Embassy, London',
                 location: {
                     lat: 51.51251,
                     lng: -0.1528990
@@ -84,7 +80,7 @@ var init_places = [{
 }];
 
 
-(function() {
+var initKO = function() {
     'use strict';
 
 	var ENTER_KEY = 13;
@@ -121,10 +117,8 @@ var init_places = [{
 
     // represents simple place item
     var Place_list = function(data) {
-        // this.title = ko.observable(data.title);
-        // this.location = ko.observable(data.location);
-        this.title = data.title;
-        this.location = data.location;
+        this.title = ko.observable(data.title);
+        this.location = ko.observable(data.location);
     };
 
     var ViewModel = function(routeData) {
@@ -147,16 +141,20 @@ var init_places = [{
 
         // data-bind with zoom-to-area-text
         this.zoom_area = function() {
-            // console.log(event.target.value);
 
             // this zooms to area
             zoomToArea();
 
         };
 
-        //
+        // SIDEBAR ROUTES FEATURES
+        // ko.array for holding routes
         this.items = ko.observableArray(routeData);
+        //
+        this.points = ko.observableArray([]);
+        // ko.ob for taking in the input from the user
         this.itemToAdd = ko.observable("");
+        // when input submitted, addItem function runs to add it to items
         this.addItem = function() {
             if (self.itemToAdd() !== "") {
                 var routeItem = {
@@ -164,11 +162,36 @@ var init_places = [{
                     routePoints: []
                 };
                 self.items.push(routeItem); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
+
+
+                console.log(routeItem);
+                _.each(routeItem.routePoints, function(obj){
+                    console.log(obj);
+                    self.points.push(obj);
+                });
+
+
                 self.itemToAdd(""); // Clears the text box, because it's bound to the "itemToAdd" observable
+
             }
         };
+
+        // button event:
+        // deletes the last route item from the sidebar
         this.lastItemDelete = function(){
             self.items.pop();
+        };
+
+        // click event:
+        // deletes the selected route item from the sidebar
+        this.thisItemDelete = function(){
+
+            //currently disabled the function
+
+            // var that = this;
+            // self.items.remove(function(item){
+            //     return item.name == that.name;
+            // });
         };
     };
 
@@ -176,7 +199,8 @@ var init_places = [{
     // bind a new instance of our viewModel to the page
     var viewModel = new ViewModel(init_routes);
     ko.applyBindings(viewModel);
-}());
+};
+
 
 var map;
 // Create a new blank array for all the listing markers.
@@ -353,6 +377,18 @@ function initMap() {
 
     // make map fit into the boundaries
     map.fitBounds(bounds);
+    $('.route').on('click',function(){
+        var routeText = ($(this).text());
+        var selected = _.find(init_routes, function(obj){
+            console.log(obj.name);
+            return obj.name == routeText;
+        });
+        console.log(selected);
+        drawRouteLine(selected);
+    });
+    document.getElementById('routeBtn').addEventListener('click',function(){
+        drawRouteLine(init_routes[0]);
+    });
 }
 // initMap ends here
 
@@ -456,12 +492,10 @@ function zoomToArea() {
                 map.setCenter(results[0].geometry.location);
                 // For every result found, markers are place on top
                 results.forEach(function(result) {
-                    console.log(result);
                     var location = result.geometry.location;
                     var title = result.address_components[0].short_name;
                     markMarkers(location, title);
                 });
-                // console.log(results[0]);
                 map.setZoom(15);
             } else {
                 window.alert('We could not find that location - try entering a more' +
@@ -470,6 +504,47 @@ function zoomToArea() {
         });
     }
 }
+
+// draw a route based on the array given
+// also adds routePoints to the array item when
+// selecting a place
+function drawRouteLine(data) {
+    var directionsService = new google.maps.DirectionsService;
+    // Get the destination address from the user entered value.
+    var destinationAddress =
+        // get the last object of the array
+        data.routePoints.slice(-1)[0].location;
+    // var mode =
+    var waypointsArr = data.routePoints.slice(1,-1);
+    _.each(waypointsArr, function(place){
+        place.stopover = false;
+    });
+    directionsService.route({
+        origin:data.routePoints[0].location,
+        destination: destinationAddress,
+        waypoints:waypointsArr,
+        provideRouteAlternatives: false,
+        travelMode: google.maps.TravelMode.WALKING
+        // travelMode: google.maps.TravelMode[WALKING],
+        // unitSystem: UnitSystem.IMPERIAL
+    }, function(response, status){
+        if (status === google.maps.DirectionsStatus.OK){
+            var directionsDisplay = new google.maps.DirectionsRenderer({
+                map: map,
+                directions: response,
+                draggable: true,
+                polylineOptions: {
+                    strokeColor: 'green'
+                }
+            });
+        } else {
+            window.alert('request failed due to ' + status);
+        }
+    });
+}
+
+//initialize KO
+initKO();
 
 // $.ajax({
 //     url: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry,places&v=3&callback=initMap',

@@ -26,10 +26,16 @@
                 <button type="submit" data-bind="enable: itemToAdd().length > 0">Add</button>
                 <p>Your items:</p>
                 <ul data-bind="foreach: items">
-                    <li class="route" data-bind="text: name">
-                <!-- <select multiple="multiple" width="50" data-bind="options: items"> </select> -->
+                    <li class="route" data-bind="text: name, dblclick:$parent.thisItemDelete">
+                    </li>
                 </ul>
-                <button type="button" data-bind="click: lastItemDelete"> delete </button>
+
+                <ul data-bind="foreach: points">
+                    <li data-bind="text=lat"></li>
+                    <li data-bind="text=lng"></li>
+                </ul>
+
+                <button type="button" data-bind="event: {click: lastItemDelete}"> delete </button>
             </form>
 
         </sidebar>
@@ -49,7 +55,7 @@
     <script src="js/app.js"></script>
     <script async defer
         src=
-        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry,places&v=3&callback=initMap">
+        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry,drawing,directions,places&v=3&callback=initMap">
     </script>
 
 </body>
