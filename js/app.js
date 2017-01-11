@@ -1,10 +1,34 @@
-var init_routes = [{
+var init_routes = {
+    london_route01 : [
+        {
+            title: 'Big Ben',
+            location: {
+                lat: 51.500650,
+                lng: -0.122075
+            }
 
+        }, {
+            title: 'Westminster',
+            location: {
+                lat: 51.499531,
+                lng: -0.123856
+            }
 
-
-
-
-}];
+        }, {
+            title: 'RCA',
+            location: {
+                lat: 51.501135,
+                lng: -0.177372
+            }
+        }, {
+            title: 'US Embassy, London',
+            location: {
+                lat: 51.51251,
+                lng: -0.1528990
+            }
+        }
+    ],
+};
 
 
 var init_places = [{
@@ -67,18 +91,20 @@ var init_places = [{
 
     // represents simple place item
     var Place_list = function(data) {
-        this.title = ko.observable(data.title);
-        this.location = ko.observable(data.location);
+        // this.title = ko.observable(data.title);
+        // this.location = ko.observable(data.location);
+        this.title = data.title;
+        this.location = data.location;
     };
 
-    var ViewModel = function(place_list) {
+    var ViewModel = function() {
         //important trick!! self!!
         var self = this;
 
         // getting the places into the map list
         this.sitePoints = ko.observableArray([]);
         _.each(init_places, function(place) {
-            self.sitePoints.push(new place_list(place));
+            self.sitePoints.push(new Place_list(place));
         });
 
         // bind the event to the sidebar_btn
@@ -101,15 +127,8 @@ var init_places = [{
 
     // Start binding with KnockoutJS
     // bind a new instance of our viewModel to the page
-    var viewModel = new ViewModel(Place_list || []);
+    var viewModel = new ViewModel();
     ko.applyBindings(viewModel);
-
-    var testing = {};
-
-    testing._ViewModel = ViewModel;
-
-    return testing;
-
 }());
 
 var map;
@@ -295,7 +314,7 @@ function initMap() {
 function markMarkers(location, title, order, Infowindow) {
     var thisInfowindow = Infowindow;
     var markerImage = {
-       url: 'public/img/marker.png',
+    //    url: 'public/img/marker.png',
        // This marker is 20 pixels wide by 32 pixels high.
        size: new google.maps.Size(26, 34),
        // The origin for this image is (0, 0).
