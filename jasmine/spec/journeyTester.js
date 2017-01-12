@@ -63,4 +63,13 @@ describe('search bar', function(){
     * should check whether the sidebar udpateds
     */
 
+    /* TODO: should show several markers */
+
+});
+
+describe('bug fix',function(){
+
+    /* TODO: search results marker should show the infowindow
+    */
+
 });

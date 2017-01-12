@@ -175,23 +175,13 @@ var initKO = function() {
 
             }
         };
-
-        // button event:
-        // deletes the last route item from the sidebar
-        this.lastItemDelete = function(){
-            self.items.pop();
-        };
-
         // click event:
         // deletes the selected route item from the sidebar
         this.thisItemDelete = function(){
-
-            //currently disabled the function
-
-            // var that = this;
-            // self.items.remove(function(item){
-            //     return item.name == that.name;
-            // });
+            var that = this;
+            self.items.remove(function(item){
+                return item.name == that.name;
+            });
         };
     };
 
@@ -361,7 +351,7 @@ function initMap() {
         var position = init_places[i].location;
         var title = init_places[i].title;
         //** Create a marker per location, and put into markers array.
-        markMarkers(position, title, i, largeInfowindow);
+        markMarkers(position, title, largeInfowindow, i);
 
         //Extend the boundaries of the map
         bounds.extend(markers[i].position);
@@ -370,7 +360,7 @@ function initMap() {
     // event trigger on the zoom-to-area button
     document.getElementById('zoom-to-area').addEventListener('click', function() {
         //** Zoom to the searched area
-        zoomToArea();
+        zoomToArea(largeInfowindow);
     });
 
 
@@ -386,15 +376,12 @@ function initMap() {
         console.log(selected);
         drawRouteLine(selected);
     });
-    document.getElementById('routeBtn').addEventListener('click',function(){
-        drawRouteLine(init_routes[0]);
-    });
 }
 // initMap ends here
 
 
 // marking the Markers with added functionalty of Event-trigger
-function markMarkers(location, title, order, Infowindow) {
+function markMarkers(location, title, Infowindow, order) {
     var thisInfowindow = Infowindow;
     var markerImage = {
     //    url: 'public/img/marker.png',
@@ -413,11 +400,12 @@ function markMarkers(location, title, order, Infowindow) {
         id: order,
         icon: markerImage
     });
+    console.log(marker);
     // Push the marker to our array of markers.
     markers.push(marker);
     // Create an onclick event to open an infowindow at each marker.
     marker.addListener('click', function() {
-        var self = this;
+        var self=this;
         populateInfoWindow(self, thisInfowindow);
     });
 }
@@ -470,7 +458,9 @@ function populateInfoWindow(marker, infowindow) {
 // This function takes the input value in the find nearby area text input
 // locates it, and then zooms into that area. This is so that the user can
 // show all listings, then decide to focus on one area of the map.
-function zoomToArea() {
+function zoomToArea(infowindow) {
+    // hide former markers
+    hideListings();
     // Initialize the geocoder.
     var geocoder = new google.maps.Geocoder();
     // Get the address or place that the user entered.
@@ -494,8 +484,9 @@ function zoomToArea() {
                 results.forEach(function(result) {
                     var location = result.geometry.location;
                     var title = result.address_components[0].short_name;
-                    markMarkers(location, title);
+                    markMarkers(location, title, infowindow, 0);
                 });
+                // markMarkers(results[0].geometry.location, results[0].address_components[0].short_name, infowindow, 0);
                 map.setZoom(15);
             } else {
                 window.alert('We could not find that location - try entering a more' +
@@ -541,6 +532,23 @@ function drawRouteLine(data) {
             window.alert('request failed due to ' + status);
         }
     });
+}
+
+function showListings() {
+    var bounds = new google.maps.LatLngBounds();
+    // Extend the boundaries of the map for each marker and display the marker
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+      bounds.extend(markers[i].position);
+    }
+    map.fitBounds(bounds);
+}
+
+// This function will loop through the listings and hide them all.
+function hideListings() {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
 }
 
 //initialize KO

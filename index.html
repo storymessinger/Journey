@@ -26,24 +26,36 @@
                 <button type="submit" data-bind="enable: itemToAdd().length > 0">Add</button>
                 <p>Your items:</p>
                 <ul data-bind="foreach: items">
-                    <li class="route" data-bind="text: name, dblclick:$parent.thisItemDelete">
-                    </li>
+                    <div class="item-holder">
+                        <li class="route" data-bind="text: name"> </li>
+                        <button data-bind="click: $parent.thisItemDelete" type="image" src="public/img/clear.png"></button>
+                    </div>
                 </ul>
 
-                <ul data-bind="foreach: points">
+                <!-- <ul data-bind="foreach: points">
                     <li data-bind="text=lat"></li>
                     <li data-bind="text=lng"></li>
-                </ul>
-
-                <button type="button" data-bind="event: {click: lastItemDelete}"> delete </button>
+                </ul> -->
             </form>
 
         </sidebar>
         <div class="content">
-            <div class="zoom-search">
-				<!-- <input id="new-todo" data-bind="value: current, valueUpdate: 'afterkeydown', enterKey: add" placeholder="What needs to be done?" autofocus> -->
-                <input data-bind="enterKey: zoom_area" id="zoom-to-area-text" type="text" placeholder="Enter your favorite area!" >
-                <input id="zoom-to-area" type="button" value="Zoom">
+            <div class="search-bar">
+                <div class="zoom-search">
+    				<!-- <input id="new-todo" data-bind="value: current, valueUpdate: 'afterkeydown', enterKey: add" placeholder="What needs to be done?" autofocus> -->
+                    <input data-bind="enterKey: zoom_area" id="zoom-to-area-text" type="text" placeholder="Enter your favorite area!" >
+                    <input id="zoom-to-area" type="button" value="Zoom">
+                </div>
+                <ul class="search-ul">
+                    <div class="search-holder">
+                        <li class="search-result">
+                        </li>
+                        <div class="btns">
+                            <button>add</button>
+                            <button>remember</button>
+                        </div>
+                    </div>
+                </ul>
             </div>
             <div class="google-map" id="map"></div>
         </div>

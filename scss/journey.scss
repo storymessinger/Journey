@@ -82,11 +82,14 @@ body {
         .content {
             flex-grow:1;
             display: flex;
-            .zoom-search {
+            .search-bar {
                 z-index: 1000;
                 position: absolute;
                 top: 1rem;
                 right: 1rem;
+
+                display: flex;
+                flex-flow: column;
             }
             .google-map {
                 flex-grow: 1;
@@ -114,9 +117,11 @@ body {
             cursor: pointer;
         }
         li:hover {
-            background-color: $grey-light;
-            border: 1px solid $primary-color-dark;
-            color: $black;
+            // background-color: $grey-light;
+            // border: 1px solid $primary-color-dark;
+            // color: $black;
+            background-color: $primary-color;
+            color: white;
         }
         img {
             width:20px;
@@ -157,6 +162,27 @@ body {
     }
 }
 
+.item-holder {
+    position: relative;
+    button {
+        width: 1.6rem;
+        height: 1.6rem;
+        right:1.2rem;
+        bottom: 0.7rem;
+        position: absolute;
+        background: url(../public/img/clear.png);
+        background-size: cover;
+        border: 0;
+    }
+    button:focus {
+        outline: none;
+    }
+    button:hover {
+        background: url(../public/img/clear_out.png);
+        background-size: cover;
+    }
+}
+
 // zoom search design
 .zoom-search {
     background-color: $primary-color;
@@ -181,6 +207,32 @@ body {
     //to remove focus effects
     input:focus {
         outline:none;
+    }
+}
+.search-ul {
+    margin:0;
+    padding:0;
+    list-style: none;
+    .search-holder {
+        position:relative;
+        .search-result {
+            margin-top: 0.5rem;
+
+            background-color: $primary-color;
+            opacity: 0.8;
+            padding: 0.5rem 1rem 0.5rem 1rem;
+            border-radius: 0.5rem;
+            width: 400px;
+            min-height: 100px;
+
+            //material shadow
+            @include card(2);
+        }
+        .btns {
+            bottom:1rem;
+            right:1rem;
+            position: absolute;
+        }
     }
 }
 
