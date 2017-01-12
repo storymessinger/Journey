@@ -70,6 +70,7 @@ describe('search bar', function(){
 describe('bug fix',function(){
 
     /* TODO: search results marker should show the infowindow
+    DONE
     */
 
 });

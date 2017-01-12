@@ -1,3 +1,4 @@
+
 var init_routes = [
     {
         name: 'london_route01',
@@ -79,6 +80,12 @@ var init_places = [{
     }
 }];
 
+// searching results (refresh every time new search)
+var found_places = [
+    {
+        placeDetail: "<div>Dummy data</div>"
+    }
+];
 
 var initKO = function() {
     'use strict';
@@ -115,6 +122,10 @@ var initKO = function() {
 	// a custom binding to handle the enter key
 	ko.bindingHandlers.enterKey = keyhandlerBindingFactory(ENTER_KEY);
 
+    var Found_list = function(data){
+        this.placeDetail = ko.observable(data.placeDetail);
+    };
+
     // represents simple place item
     var Place_list = function(data) {
         this.title = ko.observable(data.title);
@@ -124,6 +135,13 @@ var initKO = function() {
     var ViewModel = function(routeData) {
         //important trick!! self!!
         var self = this;
+
+        //
+        this.found_places_list = ko.observableArray([]);
+        _.each(found_places, function(place){
+            self.found_places_list.push(new Found_list(place));
+        });
+        //
 
         // getting the places into the map list
         this.sitePoints = ko.observableArray([]);
@@ -139,12 +157,13 @@ var initKO = function() {
             $(event.target).toggleClass('move_right');
         };
 
+        this.found = ko.observableArray([]);
         // data-bind with zoom-to-area-text
         this.zoom_area = function() {
-
             // this zooms to area
-            zoomToArea();
-
+            $('#zoom-to-area').trigger('click');
+            // this refreshs the text input area after searching
+            $('#zoom-to-area-text').val('');
         };
 
         // SIDEBAR ROUTES FEATURES
@@ -164,9 +183,7 @@ var initKO = function() {
                 self.items.push(routeItem); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
 
 
-                console.log(routeItem);
                 _.each(routeItem.routePoints, function(obj){
-                    console.log(obj);
                     self.points.push(obj);
                 });
 
@@ -370,10 +387,8 @@ function initMap() {
     $('.route').on('click',function(){
         var routeText = ($(this).text());
         var selected = _.find(init_routes, function(obj){
-            console.log(obj.name);
             return obj.name == routeText;
         });
-        console.log(selected);
         drawRouteLine(selected);
     });
 }
@@ -400,7 +415,6 @@ function markMarkers(location, title, Infowindow, order) {
         id: order,
         icon: markerImage
     });
-    console.log(marker);
     // Push the marker to our array of markers.
     markers.push(marker);
     // Create an onclick event to open an infowindow at each marker.
@@ -459,6 +473,59 @@ function populateInfoWindow(marker, infowindow) {
 // locates it, and then zooms into that area. This is so that the user can
 // show all listings, then decide to focus on one area of the map.
 function zoomToArea(infowindow) {
+
+    // found_places=[];
+
+    var getPlacesDetails = function(result) {
+      var service = new google.maps.places.PlacesService(map);
+      service.getDetails({
+        placeId: result.place_id
+      }, function(place, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          // Set the marker property on this infowindow so it isn't created again.
+
+        //   infowindow.marker = marker;
+
+          var innerHTML = '<div>';
+          if (place.name) {
+            innerHTML += '<strong>' + place.name + '</strong>';
+          }
+          if (place.formatted_address) {
+            innerHTML += '<br>' + place.formatted_address;
+          }
+          if (place.formatted_phone_number) {
+            innerHTML += '<br>' + place.formatted_phone_number;
+          }
+          if (place.opening_hours) {
+            innerHTML += '<br><br><strong>Hours:</strong><br>' +
+                place.opening_hours.weekday_text[0] + '<br>' +
+                place.opening_hours.weekday_text[1] + '<br>' +
+                place.opening_hours.weekday_text[2] + '<br>' +
+                place.opening_hours.weekday_text[3] + '<br>' +
+                place.opening_hours.weekday_text[4] + '<br>' +
+                place.opening_hours.weekday_text[5] + '<br>' +
+                place.opening_hours.weekday_text[6];
+          }
+          if (place.photos) {
+            innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
+                {maxHeight: 100, maxWidth: 200}) + '">';
+          }
+          innerHTML += '</div>';
+
+        //   infowindow.setContent(innerHTML);
+        //   infowindow.open(map, marker);
+        //   // Make sure the marker property is cleared if the infowindow is closed.
+        //   infowindow.addListener('closeclick', function() {
+        //     infowindow.marker = null;
+        //   });
+            // console.log({placeDetail: innerHTML});
+            // this.found.push({placeDetail: innerHTML});
+            // found_places.push({placeDetail: innerHTML});
+            // console.log(found_places);
+        }
+      });
+    };
+
     // hide former markers
     hideListings();
     // Initialize the geocoder.
@@ -481,10 +548,14 @@ function zoomToArea(infowindow) {
                 // Center the map to the FIRST result
                 map.setCenter(results[0].geometry.location);
                 // For every result found, markers are place on top
+
+                // Make the found places blank
                 results.forEach(function(result) {
                     var location = result.geometry.location;
                     var title = result.address_components[0].short_name;
                     markMarkers(location, title, infowindow, 0);
+                    // push the result in
+                    getPlacesDetails(result);
                 });
                 // markMarkers(results[0].geometry.location, results[0].address_components[0].short_name, infowindow, 0);
                 map.setZoom(15);
@@ -550,6 +621,8 @@ function hideListings() {
       markers[i].setMap(null);
     }
 }
+
+
 
 //initialize KO
 initKO();

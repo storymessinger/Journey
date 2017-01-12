@@ -46,9 +46,9 @@
                     <input data-bind="enterKey: zoom_area" id="zoom-to-area-text" type="text" placeholder="Enter your favorite area!" >
                     <input id="zoom-to-area" type="button" value="Zoom">
                 </div>
-                <ul class="search-ul">
+                <ul data-bind="foreach: found_places_list" class="search-ul">
                     <div class="search-holder">
-                        <li class="search-result">
+                        <li data-bind="html:placeDetail" class="search-result">
                         </li>
                         <div class="btns">
                             <button>add</button>
