@@ -108,23 +108,108 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
 
     this.searched= ko.observableArray();
     // Attach event trigger on the zoom-to-area button
-    document.getElementById('zoom-to-area').addEventListener('click', function() {
-        //** Zoom to the searched area
-        // and put the HTML format inth to the observableArray
-        zoomToArea(largeInfowindow);
-        // console.log(searched_places);
-        // searched_places.forEach(function(place){
-        //     console.log(place);
-        //     self.searched.push(place);
-        // });
-    });
-    // data-bind with zoom-to-area-text
-    this.enterKeyPress = function() {
-        // this zooms to area
-        $('#zoom-to-area').trigger('click');
-        // this refreshs the text input area after searching
-        $('#zoom-to-area-text').val('');
+
+
+	// enterKeyPress event
+	this.enterKeyPress = function() {
+		self.searched.removeAll();
+		this.zoomToArea(largeInfowindow);
     };
+
+	// This function takes the input value in the find nearby area text input
+	// locates it, and then zooms into that area. This is so that the user can
+	// show all listings, then decide to focus on one area of the map.
+	this.zoomToArea = function(infowindow) {
+		// reset all the markers
+	    hideListings();
+
+	    var getPlacesDetails = function(result) {
+	      var service = new google.maps.places.PlacesService(map);
+	      service.getDetails({
+	        placeId: result.place_id
+	      }, function(place, status) {
+	        if (status === google.maps.places.PlacesServiceStatus.OK) {
+
+	          var innerHTML = '<div>';
+	          if (place.name) {
+	            innerHTML += '<strong>' + place.name + '</strong>';
+	          }
+	          if (place.formatted_address) {
+	            innerHTML += '<br>' + place.formatted_address;
+	          }
+	          if (place.formatted_phone_number) {
+	            innerHTML += '<br>' + place.formatted_phone_number;
+	          }
+	          if (place.opening_hours) {
+	            innerHTML += '<br><br><strong>Hours:</strong><br>' +
+	                place.opening_hours.weekday_text[0] + '<br>' +
+	                place.opening_hours.weekday_text[1] + '<br>' +
+	                place.opening_hours.weekday_text[2] + '<br>' +
+	                place.opening_hours.weekday_text[3] + '<br>' +
+	                place.opening_hours.weekday_text[4] + '<br>' +
+	                place.opening_hours.weekday_text[5] + '<br>' +
+	                place.opening_hours.weekday_text[6];
+	          }
+	          if (place.photos) {
+	            innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
+	                {maxHeight: 100, maxWidth: 200}) + '">';
+	          }
+	          innerHTML += '</div>';
+
+			  //also, check whether the result is same. Korean bug issues
+			  if(formerHTML !== innerHTML) {
+				  self.searched.push(innerHTML);
+			  }
+			  var formerHTML = innerHTML;
+
+	        }
+	      });
+	    };
+		var geocoder = new google.maps.Geocoder();
+	    var address = document.getElementById('zoom-to-area-text').value;
+	    // Make sure the address isn't blank.
+	    if (!address){
+	        window.alert('You must enter an area, or address.');
+	    } else {
+	        // Geocode the address/area entered to get the center. Then, center the map
+	        // on it and zoom in
+	        geocoder.geocode({
+	            address: address,
+	            componentRestrictions: {
+	                // locality: 'Japan'
+	            }
+	        }, function(results, status) {
+	            if (status == google.maps.GeocoderStatus.OK) {
+	                // Center the map to the FIRST result
+	                map.setCenter(results[0].geometry.location);
+	                // For every result found, markers are place on top
+
+	                // Make the found places blank
+	                results.forEach(function(result) {
+	                    var location = result.geometry.location;
+	                    var title = result.address_components[0].short_name;
+	                    markMarkers(location, title, infowindow, 0);
+	                    // push the result in
+	                    getPlacesDetails(result);
+	                });
+	                // markMarkers(results[0].geometry.location, results[0].address_components[0].short_name, infowindow, 0);
+	                map.setZoom(15);
+	            } else {
+	                window.alert('We could not find that location - try entering a more' +
+	                    ' specific place.');
+	            }
+	        });
+	    }
+	    console.log(1);
+	};
+
+
+	// This function will loop through the listings and hide them all.
+	this.hideListings = function(){
+	    for (var i = 0; i < markers.length; i++) {
+	      markers[i].setMap(null);
+	    }
+	};
 
 };
 
