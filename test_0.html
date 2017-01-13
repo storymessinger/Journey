@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content='width=device-width', initial-scale=1.0, name='viewport', charset="UTF-8">
+    <title>Journey</title>
+
+
+    <link href="https://fonts.googleapis.com/css?family=Lemonada:300,400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="scss/normalize.css">
+    <link rel="stylesheet" href="scss/journey.min.css">
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="content">
+            <div class="search-bar">
+            </div>
+            <div class="google-map" id="map"></div>
+        </div>
+    </div>
+
+    <script src="js/lib/jquery.min.js"></script>
+    <script src="js/lib/underscore.js"></script>
+    <script src="js/lib/knockout-3.4.1.js"></script>
+    <!--  -->
+    <script src="js/data.js"></script>
+    <script src="js/app_fns.js"></script>
+    <script src="js/test.js"></script>
+    <script async defer
+        src=
+        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry,drawing,directions,places&v=3&callback=loadMap">
+    </script>
+
+</body>
+</html>

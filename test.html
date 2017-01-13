@@ -43,7 +43,7 @@
             <div class="search-bar">
                 <div class="zoom-search">
     				<!-- <input id="new-todo" data-bind="value: current, valueUpdate: 'afterkeydown', enterKey: add" placeholder="What needs to be done?" autofocus> -->
-                    <input data-bind="enterKey: zoom_area" id="zoom-to-area-text" type="text" placeholder="Enter your favorite area!" >
+                    <input data-bind="enterKey: enterKeyPress" id="zoom-to-area-text" type="text" placeholder="Enter your favorite area!" >
                     <input id="zoom-to-area" type="button" value="Zoom">
                 </div>
                 <ul data-bind="foreach: found_places_list" class="search-ul">
@@ -67,10 +67,10 @@
     <!--  -->
     <script src="js/data.js"></script>
     <script src="js/app_fns.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/test.js"></script>
     <script async defer
         src=
-        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry,drawing,directions,places&v=3&callback=initMap">
+        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry,drawing,directions,places&v=3&callback=loadMap">
     </script>
 
 </body>

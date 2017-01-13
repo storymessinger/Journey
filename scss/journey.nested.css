@@ -1,0 +1,153 @@
+::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    color: #f7f7f7; }
+
+::-moz-placeholder {
+    /* Firefox 19+ */
+    color: #f7f7f7; }
+
+:-ms-input-placeholder {
+    /* IE 10+ */
+    color: #f7f7f7; }
+
+:-moz-placeholder {
+    /* Firefox 18- */
+    color: #f7f7f7; }
+
+html {
+    font-size: 16px;
+    font-family: 'Lemonada', cursive; }
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column; }
+    body .wrapper {
+        display: flex;
+        flex: 1; }
+        body .wrapper .sidebar {
+            flex: 0 0 16rem; }
+        body .wrapper .content {
+            flex-grow: 1;
+            display: flex; }
+            body .wrapper .content .search-bar {
+                z-index: 1000;
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                display: flex;
+                flex-flow: column; }
+            body .wrapper .content .google-map {
+                flex-grow: 1; }
+
+.sidebar {
+    background-color: #74daad;
+    border-right: 10px solid #FFE781;
+    color: #f7f7f7;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.23), 0 10px 40px rgba(0, 0, 0, 0.19); }
+    .sidebar ul {
+        list-style: none;
+        padding: 0; }
+        .sidebar ul li {
+            box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+            background-color: #ffffff;
+            color: #7a7e7e;
+            padding: 1rem 1rem 1rem 1rem;
+            margin: 1rem 1rem 1rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer; }
+        .sidebar ul li:hover {
+            background-color: #74daad;
+            color: white; }
+        .sidebar ul img {
+            width: 20px; }
+
+.sidebar_btn {
+    display: none; }
+
+@media (max-width: 1199px) {
+    .sidebar {
+        display: block;
+        position: fixed;
+        height: 100vh;
+        width: 16rem;
+        left: -16rem;
+        z-index: 1001;
+        transition: all 0.3s ease; }
+    .unfolded {
+        left: 0rem; }
+    .sidebar_btn {
+        display: block;
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 1000;
+        color: #f7f7f7; }
+    .move_right {
+        left: 18rem;
+        transition: all 0.8s ease-out; } }
+
+.item-holder {
+    position: relative; }
+    .item-holder button {
+        width: 1.6rem;
+        height: 1.6rem;
+        right: 1.2rem;
+        bottom: 0.7rem;
+        position: absolute;
+        background: url(../public/img/clear.png);
+        background-size: cover;
+        border: 0; }
+    .item-holder button:focus {
+        outline: none; }
+    .item-holder button:hover {
+        background: url(../public/img/clear_out.png);
+        background-size: cover; }
+
+.zoom-search {
+    background-color: #74daad;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    width: 400px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
+    display: flex; }
+    .zoom-search #zoom-to-area-text {
+        border: none;
+        background: transparent;
+        color: #ffffff;
+        margin-right: 1rem; }
+    .zoom-search input:focus {
+        outline: none; }
+
+.search-ul {
+    margin: 0;
+    padding: 0;
+    list-style: none; }
+    .search-ul .search-holder {
+        position: relative; }
+        .search-ul .search-holder .search-result {
+            margin-top: 0.5rem;
+            background-color: #74daad;
+            opacity: 0.8;
+            padding: 0.5rem 1rem 0.5rem 1rem;
+            border-radius: 0.5rem;
+            width: 400px;
+            min-height: 100px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16); }
+        .search-ul .search-holder .btns {
+            bottom: 1rem;
+            right: 1rem;
+            position: absolute; }
+
+#zoom-to-area-text {
+    position: relative;
+    width: 100%;
+    margin-left: 1rem; }
+
+#zoom-to-area {
+    width: 0;
+    opacity: 0; }
+
+#pano {
+    width: 200px;
+    height: 200px; }
