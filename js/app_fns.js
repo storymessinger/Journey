@@ -68,7 +68,7 @@ function populateInfoWindow(marker, infowindow) {
 // show all listings, then decide to focus on one area of the map.
 function zoomToArea(infowindow) {
 
-    // found_places=[];
+    var searchResult = [];
 
     var getPlacesDetails = function(result) {
       var service = new google.maps.places.PlacesService(map);
@@ -105,6 +105,8 @@ function zoomToArea(infowindow) {
                 {maxHeight: 100, maxWidth: 200}) + '">';
           }
           innerHTML += '</div>';
+
+          searched_places.push(innerHTML);
 
         //   infowindow.setContent(innerHTML);
         //   infowindow.open(map, marker);

@@ -47,15 +47,15 @@ var Place_list = function(data) {
     this.location = ko.observable(data.location);
 };
 
-var ViewModel = function(routeData, placeData) {
+var ViewModel = function(routeData, placeData, foundData, searchedData) {
     console.log("ViewModel loaded");
     //important trick!! self!!
     var self = this;
 
     //
-    this.found_places_list = ko.observableArray([]);
-    _.each(found_places, function(place){
-        self.found_places_list.push(new Found_list(place));
+    this.searchedData_list = ko.observableArray([]);
+    _.each(searchedData, function(place){
+        self.searchedData_list.push(new Found_list(place));
     });
     //
 
@@ -71,15 +71,6 @@ var ViewModel = function(routeData, placeData) {
         $sidebar.toggleClass('unfolded');
         //-- if youre to target the custom element, you have to sue event.target
         $(event.target).toggleClass('move_right');
-    };
-
-    this.found = ko.observableArray([]);
-    // data-bind with zoom-to-area-text
-    this.enterKeyPress = function() {
-        // this zooms to area
-        $('#zoom-to-area').trigger('click');
-        // this refreshs the text input area after searching
-        $('#zoom-to-area-text').val('');
     };
 
     // SIDEBAR ROUTES FEATURES
@@ -102,8 +93,6 @@ var ViewModel = function(routeData, placeData) {
             _.each(routeItem.routePoints, function(obj){
                 self.points.push(obj);
             });
-
-
             self.itemToAdd(""); // Clears the text box, because it's bound to the "itemToAdd" observable
 
         }
@@ -116,10 +105,28 @@ var ViewModel = function(routeData, placeData) {
             return item.name == that.name;
         });
     };
-};
 
-// put map as an Global variable
-var map;
+    this.searched= ko.observableArray();
+    // Attach event trigger on the zoom-to-area button
+    document.getElementById('zoom-to-area').addEventListener('click', function() {
+        //** Zoom to the searched area
+        // and put the HTML format inth to the observableArray
+        zoomToArea(largeInfowindow);
+        // console.log(searched_places);
+        // searched_places.forEach(function(place){
+        //     console.log(place);
+        //     self.searched.push(place);
+        // });
+    });
+    // data-bind with zoom-to-area-text
+    this.enterKeyPress = function() {
+        // this zooms to area
+        $('#zoom-to-area').trigger('click');
+        // this refreshs the text input area after searching
+        $('#zoom-to-area-text').val('');
+    };
+
+};
 
 function initMap() {
     console.log('initMap called');
@@ -138,7 +145,7 @@ function initMap() {
 
     });
     // making an instance of a infowindow
-    var largeInfowindow = new google.maps.InfoWindow();
+    largeInfowindow = new google.maps.InfoWindow();
 
     // This autocomplete is for use in the geocoder entry box.
     var zoomAutocomplete = new google.maps.places.Autocomplete(document.getElementById('zoom-to-area-text'));
@@ -171,16 +178,15 @@ function initMap() {
         drawRouteLine(selected);
     });
 
-    // Attach event trigger on the zoom-to-area button
-    document.getElementById('zoom-to-area').addEventListener('click', function() {
-        //** Zoom to the searched area
-        zoomToArea(largeInfowindow);
-    });
-
     console.log('initMap ended');
 }
 
+// put map as an Global variable
+var map;
+// share it global
+var largeInfowindow;
+
 var loadMap = function() {
     initMap();
-    ko.applyBindings(new ViewModel(init_routes, init_places));
+    ko.applyBindings(new ViewModel(init_routes, init_places, found_places, searched_places));
 };

@@ -2,11 +2,9 @@
 var markers = [];
 
 //
-var found_places = [
-    {
-        placeDetail: "<div>Dummy data</div>"
-    }
-];
+var searched_places = ['a','b'];
+
+var found_places = [];
 
 //
 var init_routes = [
@@ -68,7 +66,8 @@ var init_routes = [
     },
 ];
 
-var init_places = [{
+var init_places = [
+    {
     title: 'Big Ben',
     location: {
         lat: 51.500650,
