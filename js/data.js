@@ -8,6 +8,7 @@ var found_places = [];
 
 var init_routes = [
     {
+        selected : false,
         name : 'route 1',
     	route_info: {
             origin: "New York, NY",
@@ -15,6 +16,38 @@ var init_routes = [
             waypoints: [
     			{
     				location: "Providence, RI",
+    				stopover: true
+    			}
+    		],
+            optimizeWaypoints: true
+            // travelMode: google.maps.TravelMode.DRIVING
+        }
+    },
+    {
+        selected : false,
+        name : 'route 2',
+    	route_info: {
+            origin: "Tokyo",
+            destination: "Osaka",
+            waypoints: [
+    			{
+    				location: "Kyoto",
+    				stopover: true
+    			}
+    		],
+            optimizeWaypoints: true
+            // travelMode: google.maps.TravelMode.DRIVING
+        }
+    },
+    {
+        selected : false,
+        name : 'route 3',
+    	route_info: {
+            origin: "Seoul",
+            destination: "Busan",
+            waypoints: [
+    			{
+    				location: "Daejeon",
     				stopover: true
     			}
     		],

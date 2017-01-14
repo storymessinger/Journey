@@ -39,7 +39,7 @@
                     <li data-bind="text=lng"></li>
                 </ul> -->
             </form>
-            <button data-bind='click : calculateAndDisplayRoute' id="test_submit">test</button>
+            <button data-bind="click: test_button">test</button>
 
 
         </sidebar>
@@ -55,7 +55,7 @@
                         <li data-bind="html: $data" class="search-result">
                         </li>
                         <div class="btns">
-                            <button data-bind="click: $parent.addingPlaceToRoutes">add</button>
+                            <button data-bind="click: $parent.addingPlaceToRoutes.bind($data, $data)">add</button>
                         </div>
                     </div>
                 </ul>

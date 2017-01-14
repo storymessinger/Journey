@@ -47,6 +47,12 @@ var Place_list = function(data) {
     this.location = ko.observable(data.location);
 };
 
+var Route_list = function(data) {
+	this.name = ko.observable(data.name);
+	this.route_info = ko.observable(data.route_info);
+	this.selected = ko.observable(data.selected);
+};
+
 var ViewModel = function(routeData, placeData, foundData, searchedData) {
     //important trick!! self!!
     var self = this;
@@ -273,35 +279,36 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
     // SIDEBAR ROUTES FEATURES
 
 
-	//test
-	this.ro_name = ko.observableArray(routeData.name);
-	this.ro_route_info = ko.observableArray(routeData.route_info);
-	this.ro = ko.pureComputed({
-		push: function(value){
-			self.ro_name.push(value.name);
-			self.ro_route_info.push(value.route_info);
-		},
-		remove: function(value){
-			var that = this;
-			self.ro_name.remove(function(value){
-				return value.name == that.name;
-			});
-			self.ro_route_info.remove(function(value){
-				return value.route_info == that.route_info;
-			});
-		},
-		add: function(place){
-
-		}
-	});
-
-
+	// //test
+	// this.ro_name = ko.observableArray(routeData.name);
+	// this.ro_route_info = ko.observableArray(routeData.route_info);
+	// this.ro = ko.pureComputed({
+	// 	push: function(value){
+	// 		self.ro_name.push(value.name);
+	// 		self.ro_route_info.push(value.route_info);
+	// 	},
+	// 	remove: function(value){
+	// 		var that = this;
+	// 		self.ro_name.remove(function(value){
+	// 			return value.name == that.name;
+	// 		});
+	// 		self.ro_route_info.remove(function(value){
+	// 			return value.route_info == that.route_info;
+	// 		});
+	// 	}
+	//
+	// });
 	//test end`
-
 
     // ko.array for holding routes
 	// routeData is used for initialize
+    this.routes = ko.observableArray([]);
+    _.each(routeData, function(route){
+        self.routes.push(new Route_list(route));
+    });
+
     this.routes = ko.observableArray(routeData);
+
     // ko.ob for taking in the input from the user
     this.routeToAdd = ko.observable("");
     // when input submitted, addRoute function runs to add it to routes
@@ -327,15 +334,34 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
     };
 /////////////////////////////////////////
 
-	this.addingPlaceToRoutes = function() {
+	this.addingPlaceToRoutes = function(data) {
 		// self.routes..should put it here...what?
 		// should know which route is selected at the point of event
 		// should know which DOM element has class '.pressed'
 		// and then find out what self.route is linked with it.
 		// one of waypoints..
+		var index;
+		console.log(data);
+
 
 		// information to put in is simple.
 		// maybe formatted address -> should check
+		var pulled = self.routes().slice(index,index+1)[0];
+		self.routes.remove(function(item){
+			return item.selected === true;
+		});
+		if (pulled.route_info.origin === undefined){
+			console.log('origin in');
+
+		} else if (pulled.route_info.destination === undefined) {
+			console.log('destination in');
+
+		} else {
+			console.log('waypoint in');
+			var obj = {
+			};
+			// pulled.route_info.waypoints.
+		}
 
 		console.log(this);
 
@@ -349,14 +375,33 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
 	this.directionsDisplay.setMap(map);
 
 	this.routeToggle = function(data, event) {
+		console.log("pressed!");
 		// toggle class .pressed for visualization
 		$('.route').removeClass('pressed');
 		target = event.target;
 		$(target).addClass('pressed');
 
-		// toggle <selected>
+		// this is implement of making the selected route
+		// to have 'selected = true' and others to
+		// 'selected = false'
+		// by this, I can know what route is currently being edited
+		var index = self.routes.indexOf(this);
+		for(i=0; i<self.routes().length; i++){
+			var pulled = self.routes().slice(0,1)[0];
+			if (i != index){
+				pulled.selected = false;
+			} else {
+				pulled.selected = true;
+			}
+			self.routes.push(pulled);
+			self.routes.splice(0,1);
+		}
 
 		self.calculateAndDisplayRoute(this);
+	};
+
+	this.test_button = function(){
+		console.log(self.routes());
 	};
 
 	this.calculateAndDisplayRoute = function(){
