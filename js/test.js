@@ -1,14 +1,3 @@
-//  data.js
-//      init_routes
-//      init_places
-
-//  app_fns.js
-//      markMarkers(location, title, Infowindow, order)
-//      populateInfoWindow(marker, infowindow)
-//      zoomToArea(infowindow)
-//      drawRouteLine(data)
-//      showListings()
-//      hideListings();
 
 // A factory function we can use to create binding handlers for specific // keycodes.
 var ENTER_KEY = 13;
@@ -77,14 +66,6 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
         //-- if youre to target the custom element, you have to sue event.target
         $(event.target).toggleClass('move_right');
     };
-
-	/////////////////////////////////////////////////
-	// // Hide makers
-	// this.hideMarkers = function(markers) {
-	// 	for (var i = 0; i < markers.length; i++) {
-	// 		markers[i].setMap(null);
-	// 	}
-	// }
 
 	///////////////////////////////////////////////////////////
 
@@ -196,7 +177,10 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
 						var resultHTML_place = makeHTML_place(results[i]);
 			            //also, check whether the result is same. Korean bug issues
 			            if (formerHTML !== resultHTML_place) {
-			                self.searched.push(resultHTML_place);
+			                self.searched.push({
+								resultHTML : resultHTML_place,
+								location : results[i].geometry.location
+							});
 			            }
 			            var formerHTML = resultHTML_place;
 
@@ -251,7 +235,10 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
 		    }, function(place, status) {
 		        if (status === google.maps.places.PlacesServiceStatus.OK) {
 					var resultHTML = makeHTML(place);
-	                self.searched.push(resultHTML);
+	                self.searched.push({
+						resultHTML : resultHTML,
+						location : place.geometry.location
+					});
 		        }
 		    });
 		}
@@ -277,28 +264,6 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
 
 	///////////////////////////////////////////////////////////
     // SIDEBAR ROUTES FEATURES
-
-
-	// //test
-	// this.ro_name = ko.observableArray(routeData.name);
-	// this.ro_route_info = ko.observableArray(routeData.route_info);
-	// this.ro = ko.pureComputed({
-	// 	push: function(value){
-	// 		self.ro_name.push(value.name);
-	// 		self.ro_route_info.push(value.route_info);
-	// 	},
-	// 	remove: function(value){
-	// 		var that = this;
-	// 		self.ro_name.remove(function(value){
-	// 			return value.name == that.name;
-	// 		});
-	// 		self.ro_route_info.remove(function(value){
-	// 			return value.route_info == that.route_info;
-	// 		});
-	// 	}
-	//
-	// });
-	//test end`
 
     // ko.array for holding routes
 	// routeData is used for initialize
@@ -340,31 +305,47 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
 		// should know which DOM element has class '.pressed'
 		// and then find out what self.route is linked with it.
 		// one of waypoints..
+
 		var index;
 		console.log(data);
-
+		for(var i=0; i<self.routes().length; i++){
+			console.log(self.routes()[i]);
+			if(self.routes()[i].selected === true){
+				index = i;
+			}
+		}
+		console.log("index");
+		console.log(index);
 
 		// information to put in is simple.
 		// maybe formatted address -> should check
 		var pulled = self.routes().slice(index,index+1)[0];
-		self.routes.remove(function(item){
-			return item.selected === true;
-		});
+		console.log(pulled);
+
+		// self.routes.remove(function(item){
+		// 	return item.selected === true;
+		// });
 		if (pulled.route_info.origin === undefined){
+			pulled.route_info.origin = data;
+			self.routes.replace(self.routes()[index], pulled);
 			console.log('origin in');
 
 		} else if (pulled.route_info.destination === undefined) {
+			pulled.route_info.destination = data;
+			self.routes.replace(self.routes()[index], pulled);
 			console.log('destination in');
 
 		} else {
-			console.log('waypoint in');
 			var obj = {
+				location : data,
+				stopover : true
 			};
-			// pulled.route_info.waypoints.
+			pulled.route_info.waypoints.push(obj);
+			self.routes.replace(self.routes()[index], pulled);
+			console.log('waypoint in');
 		}
 
-		console.log(this);
-
+	console.log('end');
 	};
 
 /////////////////////////////////////////
@@ -379,6 +360,7 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
 		// toggle class .pressed for visualization
 		$('.route').removeClass('pressed');
 		target = event.target;
+		console.log(target);
 		$(target).addClass('pressed');
 
 		// this is implement of making the selected route
@@ -397,38 +379,17 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
 			self.routes.splice(0,1);
 		}
 
-		self.calculateAndDisplayRoute(this);
+		var route_info = this.route_info;
+		route_info.travelMode = google.maps.TravelMode.DRIVING;
+		self.calculateAndDisplayRoute(route_info);
 	};
 
 	this.test_button = function(){
 		console.log(self.routes());
 	};
 
-	this.calculateAndDisplayRoute = function(){
-	    // var waypts = [];
-	    // var checkboxArray = document.getElementById('waypoints');
-	    // for (var i = 0; i < checkboxArray.length; i++) {
-	    //     if (checkboxArray.options[i].selected) {
-	    //         waypts.push({
-	    //             location: checkboxArray[i].value,
-	    //             stopover: true
-	    //         });
-	    //     }
-	    // }
-	    self.directionsService.route(
-			{
-		        origin: "New York, NY",
-		        destination: "Boston, MA",
-		        waypoints: [
-					{
-						location: "Providence, RI",
-						stopover: true
-					}
-				],
-		        optimizeWaypoints: true,
-		        travelMode: google.maps.TravelMode.DRIVING
-		    },
-		function(response, status) {
+	this.calculateAndDisplayRoute = function(routeObj){
+	    self.directionsService.route(routeObj, function(response, status) {
 	        if (status === google.maps.DirectionsStatus.OK) {
 				console.log(response);
 	            self.directionsDisplay.setDirections(response);
@@ -436,7 +397,7 @@ var ViewModel = function(routeData, placeData, foundData, searchedData) {
 	            window.alert('Directions request failed due to ' + status);
 	        }
 	    });
-	}
+	};
 };
 
 function initMap() {

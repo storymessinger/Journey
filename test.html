@@ -4,7 +4,6 @@
     <meta content='width=device-width', initial-scale=1.0, name='viewport', charset="UTF-8">
     <title>Journey</title>
 
-
     <link href="https://fonts.googleapis.com/css?family=Lemonada:300,400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="scss/normalize.css">
     <link rel="stylesheet" href="scss/journey.min.css">
@@ -34,13 +33,7 @@
                     <button type="submit" data-bind="enable: routeToAdd().length > 0">Add</button>
                 </div>
 
-                <!-- <ul data-bind="foreach: points">
-                    <li data-bind="text=lat"></li>
-                    <li data-bind="text=lng"></li>
-                </ul> -->
             </form>
-            <button data-bind="click: test_button">test</button>
-
 
         </sidebar>
         <div class="content">
@@ -52,10 +45,10 @@
                 </div>
                 <ul data-bind="foreach: searched" class="search-ul">
                     <div class="search-holder">
-                        <li data-bind="html: $data" class="search-result">
+                        <li data-bind="html: resultHTML" class="search-result">
                         </li>
                         <div class="btns">
-                            <button data-bind="click: $parent.addingPlaceToRoutes.bind($data, $data)">add</button>
+                            <button style="background-color:#FFE781" class="route-add-buttons" data-bind="click: $parent.addingPlaceToRoutes.bind($data, location)">Add to route</button>
                         </div>
                     </div>
                 </ul>
