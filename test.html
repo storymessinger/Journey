@@ -15,28 +15,31 @@
     <div class="wrapper">
         <button data-bind="click: sidebarFold" type="button" class="sidebar_btn red">Fold it</button>
         <sidebar class="sidebar">
-            <ul data-bind="foreach: sitePoints">
-                <li class="route" data-bind="text: title"></li>
-                <!-- <p data-bind="text: location"></p> -->
+            <p>Recent Places:</p>
+            <ul class="recent-box" data-bind="foreach: found">
+                    <li class="recentPlace" data-bind="click: $parent.enterKeyPress.bind($data, $data.formatted_address), text: $parent.getFound($data)"></li>
             </ul>
 
-            <form data-bind="submit: addItem" id="addItem">
-                New item:
-                <input data-bind='value: itemToAdd, valueUpdate: "afterkeydown"' />
-                <button type="submit" data-bind="enable: itemToAdd().length > 0">Add</button>
-                <p>Your items:</p>
-                <ul data-bind="foreach: items">
+            <form data-bind="submit: addRoute" id="addRoute">
+                <p>Your Routes:</p>
+                <ul data-bind="foreach: routes">
                     <div class="item-holder">
-                        <li class="route" data-bind="text: name"> </li>
-                        <button data-bind="click: $parent.thisItemDelete" type="image" src="public/img/clear.png"></button>
+                        <li class="route" data-bind="click: $parent.routeToggle, text: name"> </li>
+                        <button data-bind="click: $parent.thisRouteDelete" type="image" src="public/img/clear.png"></button>
                     </div>
                 </ul>
+                <p>Add Routes:</p>
+                <div class="adding-route">
+                    <input data-bind='value: routeToAdd, valueUpdate: "afterkeydown"' />
+                    <button type="submit" data-bind="enable: routeToAdd().length > 0">Add</button>
+                </div>
 
                 <!-- <ul data-bind="foreach: points">
                     <li data-bind="text=lat"></li>
                     <li data-bind="text=lng"></li>
                 </ul> -->
             </form>
+            <button data-bind='click : calculateAndDisplayRoute' id="test_submit">test</button>
 
 
         </sidebar>
@@ -52,8 +55,7 @@
                         <li data-bind="html: $data" class="search-result">
                         </li>
                         <div class="btns">
-                            <button>add</button>
-                            <button>remember</button>
+                            <button data-bind="click: $parent.addingPlaceToRoutes">add</button>
                         </div>
                     </div>
                 </ul>

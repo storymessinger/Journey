@@ -62,51 +62,13 @@ function populateInfoWindow(marker, infowindow) {
         infowindow.open(map, marker);
     }
 }
-
-// draw a route based on the array given
-// also adds routePoints to the array item when
-// selecting a place
-function drawRouteLine(data) {
-    var directionsService = new google.maps.DirectionsService;
-    // Get the destination address from the user entered value.
-    var destinationAddress =
-        // get the last object of the array
-        data.routePoints.slice(-1)[0].location;
-    // var mode =
-    var waypointsArr = data.routePoints.slice(1,-1);
-    _.each(waypointsArr, function(place){
-        place.stopover = false;
-    });
-    directionsService.route({
-        origin:data.routePoints[0].location,
-        destination: destinationAddress,
-        waypoints:waypointsArr,
-        provideRouteAlternatives: false,
-        travelMode: google.maps.TravelMode.WALKING
-        // travelMode: google.maps.TravelMode[WALKING],
-        // unitSystem: UnitSystem.IMPERIAL
-    }, function(response, status){
-        if (status === google.maps.DirectionsStatus.OK){
-            var directionsDisplay = new google.maps.DirectionsRenderer({
-                map: map,
-                directions: response,
-                draggable: true,
-                polylineOptions: {
-                    strokeColor: 'green'
-                }
-            });
-        } else {
-            window.alert('request failed due to ' + status);
-        }
-    });
-}
-
-function showListings() {
-    var bounds = new google.maps.LatLngBounds();
-    // Extend the boundaries of the map for each marker and display the marker
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(map);
-      bounds.extend(markers[i].position);
-    }
-    map.fitBounds(bounds);
-}
+//
+// function showListings() {
+//     var bounds = new google.maps.LatLngBounds();
+//     // Extend the boundaries of the map for each marker and display the marker
+//     for (var i = 0; i < markers.length; i++) {
+//       markers[i].setMap(map);
+//       bounds.extend(markers[i].position);
+//     }
+//     map.fitBounds(bounds);
+// }

@@ -98,25 +98,52 @@ body {
 // sidebar design
 .sidebar {
     background-color: $primary-color;
-    border-right: 10px solid $secondary-color;
+    border-right: 2px solid $secondary-color;
     color: $grey-light;
+    padding-left: 1rem;
     @include card(3);
+
+    .recent-box {
+        display: flex;
+        flex-flow: row wrap;
+    }
     ul {
         list-style: none;
         padding: 0;
-        li {
+        .recentPlace {
+            display: block;
+
+            @include card(1);
+            background-color: $secondary-color;
+            color: $grey-dark;
+            font-size: 0.8rem;
+            padding: 0.8rem;
+            margin: 0.4rem 0.4rem 0.4rem 0rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+
+            max-width: 50%;
+            max-height: 2rem;
+            overflow-x: hidden;
+        }
+        .recentPlace:hover {
+            background-color: $secondary-color-dark;
+            color: black;
+        }
+        .route {
             @include card(1);
             background-color: $white;
             color: $grey-dark;
             padding: 1rem 1rem 1rem 1rem;
-            margin: 1rem 1rem 1rem 1rem;
+            margin: 1rem 1rem 1rem 0rem;
             border-radius: 0.5rem;
             cursor: pointer;
         }
-        li:hover {
-            // background-color: $grey-light;
-            // border: 1px solid $primary-color-dark;
-            // color: $black;
+        .route:hover {
+            background-color: $primary-color;
+            color: white;
+        }
+        .pressed {
             background-color: $primary-color;
             color: white;
         }
@@ -180,6 +207,51 @@ body {
     }
 }
 
+.adding-route {
+    background-color: $secondary-color;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+    display: flex;
+    input {
+        border: none;
+        background: transparent;
+        color: $primary-color;
+        margin-right: 1rem;
+        border-bottom: 1px $primary-color solid;
+    }
+    input:focus, button:focus {
+        outline: none;
+    }
+    button {
+        // border: none;
+        background-color: $primary-color;
+        color: $grey-dark;
+        padding: 0.4rem;
+        font-size: 0.8rem;
+
+    	border-radius:8px;
+    	border:1px solid #18ab29;
+
+    	display:inline-block;
+    	color:#ffffff;
+    	font-size:0.9rem;
+    	padding:8px 17px;
+
+    	text-decoration:none;
+    	// text-shadow:0px 1px 0px #57c246;
+    }
+    button:hover {
+    	background-color:$primary-color-dark;
+    }
+    button:active {
+    	position:relative;
+    	top:1px;
+    }
+
+
+
+}
 // zoom search design
 .zoom-search {
     background-color: $primary-color;
@@ -195,10 +267,9 @@ body {
 
     // input border none, google style?
     #zoom-to-area-text {
-        border: none;
+        border:none;
         background: transparent;
-        color: $white;
-
+        color:$white;
         margin-right: 1rem;
     }
     //to remove focus effects
