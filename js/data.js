@@ -1,10 +1,6 @@
 // Create a new blank array for all the listing markers.
 var markers = [];
 
-var searched_places = ['a','b'];
-
-var found_places = [];
-
 var init_routes = [
     {
         selected : false,
@@ -41,22 +37,6 @@ var init_routes = [
             waypoints: [
     			{
     				location: "Kyoto",
-    				stopover: true
-    			}
-    		],
-            optimizeWaypoints: true
-            // travelMode: google.maps.TravelMode.DRIVING
-        }
-    },
-    {
-        selected : false,
-        name : 'route 3',
-    	route_info: {
-            origin: "Seoul",
-            destination: "Busan",
-            waypoints: [
-    			{
-    				location: "Daejeon",
     				stopover: true
     			}
     		],

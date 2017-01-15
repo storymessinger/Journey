@@ -9,7 +9,7 @@ $grey-light: #f7f7f7;
 $white: #ffffff;
 
 
-// placeholder color change
+// placeholder color to grey-light
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
     color: $grey-light;
 }
@@ -64,7 +64,8 @@ html {
     font-family: 'Lemonada', cursive;
 }
 
-// this is for the holyGrail layout
+// this is for the holyGrail layout(flex)
+// https://philipwalton.github.io/solved-by-flexbox/demos/holy-grail/
 body {
     display: flex;
     min-height: 100vh;
@@ -76,7 +77,10 @@ body {
         .sidebar {
             flex: 0 0 16rem;
         }
-        .content {
+        .sidebar_btn {
+            display: none;
+        }
+        section {
             flex-grow:1;
             display: flex;
             .search-bar {
@@ -103,14 +107,18 @@ body {
     padding-left: 1rem;
     @include card(3);
 
-    .recent-box {
-        display: flex;
-        flex-flow: row wrap;
-    }
     ul {
         list-style: none;
         padding: 0;
-        .recentPlace {
+        img {
+            width:20px;
+        }
+    }
+
+    .foundBox {
+        display: flex;
+        flex-flow: row wrap;
+        .foundPlace {
             display: block;
 
             @include card(1);
@@ -126,35 +134,115 @@ body {
             max-height: 2rem;
             overflow-x: hidden;
         }
-        .recentPlace:hover {
+        .foundPlace:hover {
             background-color: $secondary-color-dark;
             color: black;
         }
-        .route {
-            @include card(1);
-            background-color: $white;
+    }
+    form {
+        ul > .pressed {
+            background-color: $primary-color-dark !important;
+            color: white !important;
+        }
+        ul {
+            .item-holder {
+                position: relative;
+                @include card(1);
+                padding: 1rem 1rem 1rem 1rem;
+                margin: 1rem 1rem 1rem 0rem;
+                border-radius: 0.5rem;
+                cursor: pointer;
+                background-color: $white;
+                color: $grey-dark;
+
+                li {
+                    font-size: 1rem;
+                }
+                span {
+                    padding-top: 0.8rem;
+                    font-size: 0.8rem;
+                }
+                .origin:empty:before {
+                    content: attr(data-placeholder);
+                }
+                .destination:empty:before {
+                    content: attr(data-placeholder);
+                }
+                .to {
+                    font-size: 0.6rem;
+                    opacity: 0.8;
+                }
+
+                button {
+                    width: 1.6rem;
+                    height: 1.6rem;
+                    right:1.2rem;
+                    bottom: 0.7rem;
+                    position: absolute;
+                    background: url(../public/img/clear.png);
+                    background-size: cover;
+                    border: 0;
+                }
+
+                button:focus {
+                    outline: none;
+                }
+                button:hover {
+                    background: url(../public/img/clear_out.png);
+                    background-size: cover;
+                }
+            }
+            .item-holder:hover {
+                background-color: $primary-color-dark;
+                color: white;
+            }
+
+        }
+    }
+    .adding-route {
+        background-color: $secondary-color;
+        padding: 0.5rem 1rem 0.5rem 1rem;
+        border-radius: 0.5rem;
+        margin-right: 1rem;
+        display: flex;
+        input {
+            border: none;
+            background: transparent;
+            color: $primary-color;
+            margin-right: 1rem;
+            border-bottom: 1px $primary-color solid;
+        }
+        input:focus, button:focus {
+            outline: none;
+        }
+        button {
+            // border: none;
+            background-color: $primary-color-dark;
             color: $grey-dark;
-            padding: 1rem 1rem 1rem 1rem;
-            margin: 1rem 1rem 1rem 0rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
+            padding: 0.4rem;
+            font-size: 0.8rem;
+
+        	border-radius:8px;
+        	border:1px solid #18ab29;
+
+        	display:inline-block;
+        	color:#ffffff;
+        	font-size:0.9rem;
+        	padding:8px 17px;
+
+        	text-decoration:none;
+        	// text-shadow:0px 1px 0px #57c246;
         }
-        .route:hover {
-            background-color: $primary-color;
-            color: white;
+        button:hover {
+        	background-color:$primary-color-dark;
         }
-        .pressed {
-            background-color: $primary-color;
-            color: white;
-        }
-        img {
-            width:20px;
+        button:active {
+        	position:relative;
+        	top:1px;
         }
     }
 }
-.sidebar_btn {
-    display: none;
-}
+
 @media (max-width: 1199px) {
     .sidebar {
         display: block;
@@ -186,139 +274,67 @@ body {
     }
 }
 
-.item-holder {
-    position: relative;
-    button {
-        width: 1.6rem;
-        height: 1.6rem;
-        right:1.2rem;
-        bottom: 0.7rem;
-        position: absolute;
-        background: url(../public/img/clear.png);
-        background-size: cover;
-        border: 0;
-    }
-    button:focus {
-        outline: none;
-    }
-    button:hover {
-        background: url(../public/img/clear_out.png);
-        background-size: cover;
-    }
-}
 
-.adding-route {
-    background-color: $secondary-color;
-    padding: 0.5rem 1rem 0.5rem 1rem;
-    border-radius: 0.5rem;
-    margin-right: 1rem;
-    display: flex;
-    input {
-        border: none;
-        background: transparent;
-        color: $primary-color;
-        margin-right: 1rem;
-        border-bottom: 1px $primary-color solid;
-    }
-    input:focus, button:focus {
-        outline: none;
-    }
-    button {
-        // border: none;
-        background-color: $primary-color;
-        color: $grey-dark;
-        padding: 0.4rem;
-        font-size: 0.8rem;
-
-    	border-radius:8px;
-    	border:1px solid #18ab29;
-
-    	display:inline-block;
-    	color:#ffffff;
-    	font-size:0.9rem;
-    	padding:8px 17px;
-
-    	text-decoration:none;
-    	// text-shadow:0px 1px 0px #57c246;
-    }
-    button:hover {
-    	background-color:$primary-color-dark;
-    }
-    button:active {
-    	position:relative;
-    	top:1px;
-    }
-
-
-
-}
-// zoom search design
-.zoom-search {
-    background-color: $primary-color;
-    padding: 0.5rem 1rem 0.5rem 1rem;
-    border-radius: 0.5rem;
-    width: 400px;
-
-    //material shadow
-    @include card(2);
-
-    // vertically align inputs
-    display:flex;
-
-    // input border none, google style?
-    #zoom-to-area-text {
-        border:none;
-        background: transparent;
-        color:$white;
-        margin-right: 1rem;
-    }
-    //to remove focus effects
-    input:focus {
-        outline:none;
-    }
-}
-.search-ul {
-    margin:0;
-    padding:0;
-    list-style: none;
-    .search-holder {
-        position:relative;
-        .search-result {
-            margin-top: 0.5rem;
-
+section {
+    .search-bar {
+        // zoom search design
+        .zoom-search {
             background-color: $primary-color;
-            opacity: 0.8;
             padding: 0.5rem 1rem 0.5rem 1rem;
             border-radius: 0.5rem;
             width: 400px;
-            min-height: 100px;
 
             //material shadow
             @include card(2);
+
+            // vertically align inputs
+            display:flex;
+
+            // input border none, google style?
+            #searchInput {
+                position: relative;
+                width: 100%;
+
+                border:none;
+                background: transparent;
+
+                margin-left: 1rem;
+                margin-right: 1rem;
+
+                color:$white;
+
+                border-bottom: 1px $white solid;
+            }
+            //to remove focus effects
+            input:focus {
+                outline:none;
+            }
         }
-        .btns {
-            bottom:1rem;
-            right:1rem;
-            position: absolute;
+        .search-ul {
+            margin:0;
+            padding:0;
+            list-style: none;
+            .search-holder {
+                position:relative;
+                .search-result {
+                    margin-top: 0.5rem;
+
+                    background-color: $primary-color;
+                    opacity: 0.8;
+                    padding: 0.5rem 1rem 0.5rem 1rem;
+                    border-radius: 0.5rem;
+                    width: 400px;
+                    min-height: 100px;
+
+                    //material shadow
+                    @include card(2);
+                }
+                .btns {
+                    bottom:1rem;
+                    right:1rem;
+                    position: absolute;
+                }
+            }
         }
     }
-}
-
-
-// tutorial
-#zoom-to-area-text {
-    position: relative;
-    width: 100%;
-    margin-left: 1rem;
-}
-
-#zoom-to-area {
-    width: 0;
-    opacity: 0;
-}
-
-// google maps related
-#pano {
-    width: 200px;
-    height: 200px;
 }

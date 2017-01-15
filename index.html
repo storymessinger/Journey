@@ -4,7 +4,6 @@
     <meta content='width=device-width', initial-scale=1.0, name='viewport', charset="UTF-8">
     <title>Journey</title>
 
-
     <link href="https://fonts.googleapis.com/css?family=Lemonada:300,400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="scss/normalize.css">
     <link rel="stylesheet" href="scss/journey.min.css">
@@ -15,50 +14,51 @@
     <div class="wrapper">
         <button data-bind="click: sidebarFold" type="button" class="sidebar_btn red">Fold it</button>
         <sidebar class="sidebar">
-            <ul data-bind="foreach: sitePoints">
-                <li class="route" data-bind="text: title"></li>
-                <!-- <p data-bind="text: location"></p> -->
+            <p>Recent Places:</p>
+            <ul class="foundBox" data-bind="foreach: found">
+                    <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.formatted_address), text: $parent.getFound($data)"></li>
             </ul>
 
-            <form data-bind="submit: addItem" id="addItem">
-                New item:
-                <input data-bind='value: itemToAdd, valueUpdate: "afterkeydown"' />
-                <button type="submit" data-bind="enable: itemToAdd().length > 0">Add</button>
-                <p>Your items:</p>
-                <ul data-bind="foreach: items">
-                    <div class="item-holder">
+            <form data-bind="submit: addRoute" id="addRoute">
+                <p>Your Routes:</p>
+                <ul data-bind="foreach: routes">
+                    <div class="item-holder" data-bind="click: $parent.displayRoute" >
                         <li class="route" data-bind="text: name"> </li>
-                        <button data-bind="click: $parent.thisItemDelete" type="image" src="public/img/clear.png"></button>
+                        <button data-bind="click: $parent.thisRouteDelete" type="image" src="public/img/clear.png"></button>
+                        <!-- kept for further tests -->
+                        <!-- <span class="origin" data-bind="text: route_info.origin" data-placeholder="[Origin]"></span>
+                        <span class="to">to</span>
+                        <span class="destination" data-bind="text: route_info.destination" data-placeholder="[Destination]"></span> -->
+                        <!-- kept for further tests -->
                     </div>
                 </ul>
+                <p>Add Routes:</p>
+                <div class="adding-route">
+                    <input data-bind='value: routeToAdd, valueUpdate: "afterkeydown"' />
+                    <button type="submit" data-bind="enable: routeToAdd().length > 0">Add</button>
+                </div>
 
-                <!-- <ul data-bind="foreach: points">
-                    <li data-bind="text=lat"></li>
-                    <li data-bind="text=lng"></li>
-                </ul> -->
             </form>
 
         </sidebar>
-        <div class="content">
+
+        <section class="content">
             <div class="search-bar">
                 <div class="zoom-search">
-    				<!-- <input id="new-todo" data-bind="value: current, valueUpdate: 'afterkeydown', enterKey: add" placeholder="What needs to be done?" autofocus> -->
-                    <input data-bind="enterKey: zoom_area" id="zoom-to-area-text" type="text" placeholder="Enter your favorite area!" >
-                    <input id="zoom-to-area" type="button" value="Zoom">
+                    <input data-bind="enterKey: enterKeyPress" id="searchInput" type="text" placeholder="Enter your favorite area!" >
                 </div>
-                <ul data-bind="foreach: found_places_list" class="search-ul">
+                <ul data-bind="foreach: searched" class="search-ul">
                     <div class="search-holder">
-                        <li data-bind="html:placeDetail" class="search-result">
+                        <li data-bind="html: resultHTML" class="search-result">
                         </li>
                         <div class="btns">
-                            <button>add</button>
-                            <button>remember</button>
+                            <button data-bind="click: $parent.addingPlaceToRoutes.bind($data, location)" style="background-color:#FFE781" class="route-add-buttons">Add to route</button>
                         </div>
                     </div>
                 </ul>
             </div>
             <div class="google-map" id="map"></div>
-        </div>
+        </section>
     </div>
 
     <script src="js/lib/jquery.min.js"></script>
@@ -66,11 +66,10 @@
     <script src="js/lib/knockout-3.4.1.js"></script>
     <!--  -->
     <script src="js/data.js"></script>
-    <script src="js/app_fns.js"></script>
     <script src="js/app.js"></script>
     <script async defer
         src=
-        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry,drawing,directions,places&v=3&callback=initMap">
+        "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXWT_uPQIuxP-10SQ5qYjVslLA-WmOmG4&libraries=geometry,drawing,directions,places&v=3&callback=loadMap">
     </script>
 
 </body>

@@ -46,13 +46,15 @@ function zoomToArea(infowindow) {
 }
 ```
 ```
-document.getElementById('zoom-to-area').addEventListener('click', function() {
-    //** Zoom to the searched area
-    // and put the HTML format inth to the observableArray
-    self.searched.push(zoomToArea(largeInfowindow));
+this.zoomToArea = function(infowindow) {
+		// reset
+        ...
 });
 ```
 Solved it by changing two things
-1. I movec the event listner from the initMap function to the ViewModel, becuase of its lexcial scope.
-2. I added a return in the zoomToArea function, so that it could be handed in and put it in the observable array.
-3. ==BUT another problem! cannot get the correct information!!==
+1. I moved the event listner from the initMap function to the ViewModel, becuase of its lexcial scope.
+2. I changed the position of the function from outside of the ViewModel to the inside, as a method. This was really big step. Before this, I tried returning the value and all sort of things. It all failed due to the complexity of the callback. (and of closurses and functional scope)
+3. additionally I found out that I was calling the function twice when I enterKey-ed the search bar. Fixed this.
+
+
+###
