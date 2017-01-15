@@ -545,3 +545,10 @@ $('.adding-route').on('keyup keypress', function(e) {
     return false;
   }
 });
+
+// $('#sidebar_btn').on('click', function(){
+//     var $sidebar = $('sidebar');
+//     $sidebar.toggleClass('unfolded');
+//     //-- if youre to target the custom element, you have to sue event.target
+//     $(this).toggleClass('move_right');
+// });

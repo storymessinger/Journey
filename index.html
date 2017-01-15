@@ -12,8 +12,8 @@
 
 <body>
     <div class="wrapper">
-        <button data-bind="click: sidebarFold" type="button" class="sidebar_btn red">Fold it</button>
         <sidebar class="sidebar">
+            <button data-bind="click: sidebarFold" type="button" id="sidebar_btn"></button>
             <p>Recent Places:</p>
             <ul class="foundBox" data-bind="foreach: found">
                     <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.formatted_address), text: $parent.getFound($data)"></li>

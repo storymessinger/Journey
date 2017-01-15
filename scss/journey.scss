@@ -70,15 +70,19 @@ body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+    position: relative;
 
     .wrapper {
         display: flex;
         flex: 1;
         .sidebar {
+            padding-top: 3rem;
             flex: 0 0 16rem;
         }
-        .sidebar_btn {
-            display: none;
+        #sidebar_btn {
+            position: fixed;
+            top: 1.5rem;
+            left: 1rem;
         }
         section {
             flex-grow:1;
@@ -107,6 +111,21 @@ body {
     padding-left: 1rem;
     @include card(3);
 
+    #sidebar_btn {
+            background-color: red;
+            color: $grey-dark;
+            padding: 0.4rem;
+        	border-radius:8px;
+            width: 2rem;
+            height: 1rem;
+
+    }
+    #sidebar_btn:hover {
+    	background-color: #8B0000;
+    }
+    #sidebar_btn:focus {
+        outline: none;
+    }
     ul {
         list-style: none;
         padding: 0;
@@ -250,7 +269,7 @@ body {
         height: 100vh;
         width: 16rem;
         // box-shadow:
-        left:-16rem;
+        left:-18rem;
         z-index: 1001;
 
         transition: all 0.3s ease;
@@ -258,25 +277,34 @@ body {
     .unfolded {
         left: 0rem;
     }
-    .sidebar_btn {
+    #sidebar_btn {
         display: block;
-        position: fixed;
+        position: absolute;
         top: 2rem;
         left: 2rem;
         z-index: 1000;
 
         color: $grey-light;
     }
-    .move_right {
-        left: 18rem;
-        // this makes one-way transition on sidebar_btn
-        transition: all 0.8s ease-out;
-    }
 }
 
+@media (max-width: 500px) {
+
+    .zoom-search {
+        max-width: 80vw;
+        margin: auto;
+    }
+    .search-ul {
+        max-width: 80vw;
+        margin: auto;
+    }
+
+
+}
 
 section {
     .search-bar {
+        margin-top: 2.8rem;
         // zoom search design
         .zoom-search {
             background-color: $primary-color;
@@ -314,6 +342,7 @@ section {
             margin:0;
             padding:0;
             list-style: none;
+            width:400px;
             .search-holder {
                 position:relative;
                 .search-result {
@@ -323,7 +352,7 @@ section {
                     opacity: 0.8;
                     padding: 0.5rem 1rem 0.5rem 1rem;
                     border-radius: 0.5rem;
-                    width: 400px;
+                    width: 100%;
                     min-height: 100px;
 
                     //material shadow
@@ -331,7 +360,7 @@ section {
                 }
                 .btns {
                     bottom:1rem;
-                    right:1rem;
+                    right: 0;
                     position: absolute;
                 }
             }
