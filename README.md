@@ -2,12 +2,32 @@
 *From Udacity Frontend Nanodegree Project*
 
 ## About
+This project is an web service project  to make an website which will keep your journey routes.
+This could be used ...
+1. When you are planning for your trip to somewhere
+2. When you want to remember the route you have been
+3. or just find a place of your interest
 
 ## How to use
 
-## Code snippets
+#### Search address/places
+You are able to search many places via Google Map API service with the search bar provided.
+You can also search places by using keywords such as 'pizza'  with the search bar.
+If it is not a recognized address, search will give users recommendations. (via Google Map Places library)
 
-## Breakthroughs during development
+#### Editing routes
+Your 'Route' can be made by using the sidebar provided by clicking one of the routes and than, adding the places you have searched. By adding the places, it will automatically updated the route.
+
+#### Convenient UI
+Your recent searches are remembered on your sidebar. By clicking one of them, it will go back to your history of your findings.
+
+## Future TODOs
+1. This service should  linked to a certain database. By this way, people will finally able to 'Save' their routes.
+2. the UI could be thought more carefully, based on the usuabillity. Should test out with users.
+3. After (1), routes editing functionality could be upgraded. There could be deleting some places in the route, as well as option for optimizing the route vis Google Map distance library. Also it could provide some information about the route.
+4. Search result could be linked to related websites or wikis.
+
+## (supplementary) Breakthroughs during development
 
 #### Basic structure problem
 ==Problem : Cannnot get Google API and knockoutJS working together==
@@ -57,4 +77,7 @@ Solved it by changing two things
 3. additionally I found out that I was calling the function twice when I enterKey-ed the search bar. Fixed this.
 
 
-###
+### to be added ...
+
+# license
+The content of this repository is licensed under a Creative Commons Attribution License
