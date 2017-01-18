@@ -173,8 +173,8 @@ var ViewModel = function(startRouteData, startPositionData) {
     			// to remember
     			self.found.unshift(place);
     			// remove extras
-    			if (self.found().length > 5) {
-    				var sliced = self.found().slice(0,4);
+    			if (self.found().length > 10) {
+    				var sliced = self.found().slice(0,9);
     				self.found.removeAll();
     				for (i=0; i<sliced.length; i++){
     					self.found.push(sliced[i]);
@@ -241,10 +241,11 @@ var ViewModel = function(startRouteData, startPositionData) {
 						count++;
 					}
 				}
+                console.log(self.found());
 				//Remember it in the founds-sidebar
 				self.found.unshift(results[0]);
-				if (self.found().length > 4) {
-					var sliced = self.found().slice(0,4);
+				if (self.found().length > 10) {
+					var sliced = self.found().slice(0,9);
 					self.found.removeAll();
 					for (i=0; i<sliced.length; i++){
 						self.found.push(sliced[i]);
@@ -333,6 +334,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 	this.addingPlaceToRoutes = function(location) {
 		// Users must have selected a route in order to
 		// add a place 'to' a route
+        console.log(location);
 		if (self.currentRouteIndex() === undefined) {
 			alert('please select a route');
 		} else {
@@ -376,7 +378,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 			// reset
 			$('.item-holder').removeClass('pressed');
 
-			// give pressed class to the selected
+			// give 'pressed' class to the selected
 			var target = event.target;
 			var $target = $(target).parent();
 			$($target).addClass('pressed');
@@ -389,22 +391,14 @@ var ViewModel = function(startRouteData, startPositionData) {
 		if(this.name !== undefined){
 			self.currentRouteIndex(self.routes.indexOf(this));
 			for(i=0; i<self.routes().length; i++){
-				// var pulled = self.routes().slice(0,1)[0];
 				if (i != self.currentRouteIndex()){
-					// pulled.selected = false;
 					self.routes()[i].selected = false;
 				} else {
-					// pulled.selected = true;
 					self.routes()[i].selected = true;
 				}
-				// self.routes.push(pulled);
-				// self.routes.splice(0,1);
 			}
 		}
-		// route_info needs TravelMode information.
-		// insert WALKING mode
 
-		// var route_info = self.routes()[self.currentRouteIndex()].route_info;
 		var route_info = self.routes()[self.currentRouteIndex()].route_info;
 		route_info.travelMode = google.maps.TravelMode.WALKING;
 
@@ -417,6 +411,9 @@ var ViewModel = function(startRouteData, startPositionData) {
 
 	// Function to draw route based on route information
 	this.calculateAndDisplayRoute = function(routeObj){
+		// reset all the markers
+	    self.hideMarkers();
+        // routeObj.origin
 	    self.directionsService.route(routeObj, function(response, status) {
 	        if (status === google.maps.DirectionsStatus.OK) {
 	            self.directionsDisplay.setDirections(response);
