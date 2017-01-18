@@ -36,7 +36,9 @@ Your recent searches are remembered on your sidebar. By clicking one of them, it
 var data = [ ];
 var map;
 
-var ViewModel = function(){};
+var ViewModel = function(){
+
+};
 
 function initMap() {
 	map = new google.maps.map(document.getElementbyId('map'), {
@@ -48,7 +50,7 @@ function initMap() {
 // this is the callback function
 var loadMap = function(){
 	initMap();
-    ko.applyBindings(new ViewModel(init_routes));
+    ko.applyBindings(new ViewModel());
 }
 ```
 
