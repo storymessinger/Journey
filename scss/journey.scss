@@ -81,8 +81,12 @@ body {
         }
         #sidebar_btn {
             position: fixed;
-            top: 1.5rem;
+            top: 1rem;
             left: 1rem;
+            @include card(1);
+        }
+        #sidebar_btn:active {
+            @include card(0);
         }
         section {
             flex-grow:1;
@@ -112,12 +116,12 @@ body {
     @include card(3);
 
     #sidebar_btn {
-            background-color: red;
-            color: $grey-dark;
-            padding: 0.4rem;
-        	border-radius:8px;
-            width: 2rem;
-            height: 1rem;
+        background-color: $secondary-color-dark;
+        padding: 0.4rem 1rem 0.4rem 1rem;
+    	border-radius:8px;
+        border: 0;
+        color: $grey-light;
+        opacity: 0;
 
     }
     #sidebar_btn:hover {
@@ -273,18 +277,18 @@ body {
         z-index: 1001;
 
         transition: all 0.3s ease;
+        #sidebar_btn {
+            opacity: 1;
+            display: block;
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            z-index: 1000;
+
+        }
     }
     .unfolded {
         left: 0rem;
-    }
-    #sidebar_btn {
-        display: block;
-        position: absolute;
-        top: 2rem;
-        left: 2rem;
-        z-index: 1000;
-
-        color: $grey-light;
     }
 }
 

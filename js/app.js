@@ -50,7 +50,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 
 	// This function takes the input value in the find nearby area text input
 	// locates it, and then zooms into that area.
-	// It also fires <getAddress_GeocodeDetails> function or <getAddressDetails>
+	// It also fires <getGeocodeDetails> function or <getAddressDetails>
 	// based on the search input
 	this.getSearch = function(infowindow, click) {
 
@@ -91,7 +91,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 	                    var title = result.address_components[0].short_name;
 	                    markMarkers(location, title, infowindow, 0);
 	                    // push the result in
-	                    self.getAddress_GeocodeDetails(result);
+	                    self.getGeocodeDetails(result);
 						// to remember
 						self.found.unshift(result);
 						// remove extras
@@ -112,8 +112,9 @@ var ViewModel = function(startRouteData, startPositionData) {
 	    }
 	};
 
+    this.resultGeocodeHTML = ko.observable();
 	// this function gets fired when result was made by Geocode
-	this.getAddress_GeocodeDetails = function(result) {
+	this.getGeocodeDetails = function(result) {
 
 		if(result.place_id){
 		    var service = new google.maps.places.PlacesService(map);
@@ -121,9 +122,10 @@ var ViewModel = function(startRouteData, startPositionData) {
 		        placeId: result.place_id
 		    }, function(place, status) {
 		        if (status === google.maps.places.PlacesServiceStatus.OK) {
-					var resultHTML = makeHTML(place);
+					makeHTML(place);
 	                self.searched.push({
-						resultHTML : resultHTML,
+						// resultHTML : resultHTML,
+						resultHTML : self.resultGeocodeHTML(),
 						location : place.geometry.location
 					});
 		        }
@@ -134,8 +136,7 @@ var ViewModel = function(startRouteData, startPositionData) {
             var innerHTML = '<div>';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
-                console.log("in");
-                loadPlaceInfo(place.name);
+
             }
             if (place.formatted_address) {
                 innerHTML += '<br>' + place.formatted_address;
@@ -149,11 +150,32 @@ var ViewModel = function(startRouteData, startPositionData) {
                     maxWidth: 200
                 }) + '">';
             }
+            // loadPlaceInfo(place.name, function(wikiResult){
+            //     var wikiHTML = '<ul>';
+            //     var resultNum;
+            //     // restrict the number of result to 0 to 3
+            //     if(wikiResult[1].length > 3){
+            //         resultNum = 3;
+            //     } else {
+            //         resultNum = wikiResult[1].length;
+            //     }
+            //     for (i=0; i<resultNum; i++){
+            //         wikiHTML += '<li>' + wikiResult[1][i] + '</li>';
+            //         wikiHTML += '<li>' + wikiResult[2][i] + '</li>';
+            //         wikiHTML += '<li>' + wikiResult[3][i] + '</li>';
+            //     }
+            //     wikiHTML += '</ul>';
+            //
+            //     // add it to the innerHTML
+            //     innerHTML += wikiHTML;
+            //     self.resultGeocodeHTML(innerHTML);
+            // });
             innerHTML += '</div>';
-			return innerHTML;
+            self.resultGeocodeHTML(innerHTML);
 		}
 	};
 
+    this.resultAddressHTML = ko.observable();
 	// this function gets fired when result was '''NOT''' made by Geocode
     this.getAddressDetails = function(address) {
 
@@ -164,19 +186,26 @@ var ViewModel = function(startRouteData, startPositionData) {
             bounds: bounds
         }, function(results, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
-				// self.getAddress_GeocodeDetails(results);
 				var count =0;
 				for(i=0; i<results.length; i++){
+                    
+                    var place =results[i];
+
 					if(count<3) {
-						markMarkers(results[i].geometry.location, results[i].name, largeInfowindow, 0);
-						var resultHTML_place = makeHTML_place(results[i]);
+						markMarkers(place.geometry.location, place.name, largeInfowindow, 0);
+						makeHTML_place(place);
+    	                self.searched.push({
+    						// resultHTML : resultHTML,
+    						resultHTML : self.resultAddressHTML(),
+    						location : place.geometry.location
+    					});
 						//to prevent getting too much information
 						count++;
 					}
 				}
-				//to remember
-				self.found.unshift(results[0]);
 
+				//Remember it in the founds-sidebar
+				self.found.unshift(results[0]);
 				if (self.found().length > 4) {
 					var sliced = self.found().slice(0,4);
 					self.found.removeAll();
@@ -184,7 +213,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 						self.found.push(sliced[i]);
 					}
 				}
-
             } else {
                 window.alert('We could not find that location - try entering a more' +
                 ' specific place.');
@@ -212,7 +240,7 @@ var ViewModel = function(startRouteData, startPositionData) {
                 }) + '">';
             }
             innerHTML += '</div>';
-			return innerHTML;
+            self.resultAddressHTML(innerHTML);
 		}
     };
 
@@ -420,35 +448,27 @@ function initMap() {
 // This is an 3rd party API use: Naver
  function loadPlaceInfo(search, cb) {
 
-    //  var feedUrl = allFeeds[id].url,
-    //      feedName = allFeeds[id].name;
-    var info = {
-        // X-Naver-Client-Id :
-        query : "search",
-        display : "10",
-        start : "1",
-        sort : "sim"
-    };
+     resultHTML = '<div>';
+
      $.ajax({
-       dataType: "json",
-       type: "GET",
-       url: 'https://openapi.naver.com/v1/search/blog.json?clientId=bvVpXB9MpSn7t7LLANOC',
-       data: JSON.stringify(info),
-       success: function (result, status){
+         asnyc: true,
+         dataType: "jsonp",
+         type: "GET",
+         url: "https://ko.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&format=json",
+         success: function(result, status) {
+             console.log(status);
 
-                console.log(result);
-
-                 if (cb) {
-                     cb();
-                 }
-               },
-       error: function (result, status, err){
-                console.log(status);
-                 //run only the callback without attempting to parse result due to error
-                 if (cb) {
-                     cb();
-                 }
-               }
+             if (cb) {
+                 cb(result);
+             }
+         },
+         error: function(result, status, err) {
+             console.log("error with connection from mediawiki: " + status);
+             //run only the callback without attempting to parse result due to error
+             if (cb) {
+                 cb();
+             }
+         }
      });
  }
 
