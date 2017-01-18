@@ -108,10 +108,19 @@ var ViewModel = function(startRouteData, startPositionData) {
 		var geocoder = new google.maps.Geocoder();
 	    var address = document.getElementById('searchInput').value;
 
+
 	    // Make sure the address and plae_id isn't both blank.
 	    if (!address && !place_id){
 	        window.alert('You must enter an area, or address.');
-	    } else {
+        } else if ($('#searchFilter').val() === "recent") {
+            // console.log(self.found());
+            var f = self.found().map(function(place){
+                if (place.name.includes(address)){
+                    return place;
+                }
+            });
+            console.log(f);
+        } else {
 	        // Geocode the address/area entered to get the center. Then, center the map
 	        // on it and zoom in
             var input;
@@ -159,7 +168,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 		if(result.place_id){
 		    var service = new google.maps.places.PlacesService(map);
 		    service.getDetails({
-		        placeId: result.place_id
+		        placeId: result.place_id,
 		    }, function(place, status) {
 		        if (status === google.maps.places.PlacesServiceStatus.OK) {
 					makeHTML(place);

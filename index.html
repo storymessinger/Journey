@@ -48,6 +48,13 @@
                 <div class="zoom-search">
                     <input data-bind="enterKey: enterKeyPress" id="searchInput" type="text" placeholder="Enter your favorite area!" >
                 </div>
+                <form class="zoom-search">
+                    <select id="searchFilter">
+                        <option value="world">World</option>
+                        <option value="recent">Recent Findings</option>
+                        <option value="japan">Japan</option>
+                    </select>
+                </form>
                 <ul data-bind="foreach: searched" class="search-ul">
                     <div class="search-holder">
                         <li data-bind="html: resultHTML" class="search-result">
