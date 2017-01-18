@@ -27,7 +27,7 @@ Your recent searches are remembered on your sidebar. By clicking one of them, it
 3. After (1), routes editing functionality could be upgraded. There could be deleting some places in the route, as well as option for optimizing the route vis Google Map distance library. Also it could provide some information about the route.
 ~~4. Search result could be linked to related websites or wikis.
 
-## (supplementary) Breakthroughs during development
+## Supplementary
 
 #### 1. Basic structure problem
 ==Problem : Cannnot get Google API and knockoutJS working together==
@@ -123,15 +123,14 @@ var Place_list = function(data) {
 ___
 
 ##### 4, How to link it to a database?
+== problem: The problem I am facing with this is drawn underneath ==
+
+1. the data-binding between the view(HTML) and the observables of knockout can be understood. ( (1) + data-bind )
+2. But the binding between the observable and the data is not so clear.
+3. NOT just getting the 'INITIAL' values for the observable but 'BINDING' with the database. HOW TO DO IT?
 ![image](http://storymessinger.github.io/Journey/Image002.png)
 
-
-
-
-
-
-
-
+== solved: ==
 
 
 
