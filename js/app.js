@@ -169,15 +169,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 					if(count<3) {
 						markMarkers(results[i].geometry.location, results[i].name, largeInfowindow, 0);
 						var resultHTML_place = makeHTML_place(results[i]);
-			            //also, check whether the result is same. Korean bug issues
-			            if (formerHTML !== resultHTML_place) {
-			                self.searched.push({
-								resultHTML : resultHTML_place,
-								location : results[i].geometry.location
-							});
-			            }
-			            var formerHTML = resultHTML_place;
-						//to prevent re-calling
+						//to prevent getting too much information
 						count++;
 					}
 				}
@@ -199,6 +191,7 @@ var ViewModel = function(startRouteData, startPositionData) {
         });
 
 		function makeHTML_place(place) {
+
             var innerHTML = '<div>';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
