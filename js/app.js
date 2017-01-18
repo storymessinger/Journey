@@ -201,6 +201,7 @@ var ViewModel = function(startRouteData, startPositionData) {
             var innerHTML = '<div>';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
+                console.dir(loadPlaceInfo(place.name));
             }
             if (place.formatted_address) {
                 innerHTML += '<br>' + place.formatted_address;
@@ -420,6 +421,39 @@ function initMap() {
     map.fitBounds(bounds);
 }
 
+// This is an 3rd party API use: Naver
+ function loadPlaceInfo(search, cb) {
+
+    //  var feedUrl = allFeeds[id].url,
+    //      feedName = allFeeds[id].name;
+    var info = {
+        query : "search",
+        display : "10",
+        start : "1",
+        sort : "sim"
+    };
+     $.ajax({
+       dataType: "json",
+       type: "GET",
+       url: 'https://openapi.naver.com/v1/search/blog.json',
+       data: JSON.stringify(info),
+       success: function (result, status){
+
+                console.log(result);
+
+                 if (cb) {
+                     cb();
+                 }
+               },
+       error: function (result, status, err){
+                console.log(status);
+                 //run only the callback without attempting to parse result due to error
+                 if (cb) {
+                     cb();
+                 }
+               }
+     });
+ }
 
 ////// GLOBAL varaibles and functions
 
