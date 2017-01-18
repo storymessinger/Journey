@@ -8,6 +8,49 @@ var loadMap = function() {
     ko.applyBindings(new ViewModel(init_routes, init_places));
 };
 
+
+// this is a factory function we can use to create binding handlers for specific // keycodes.
+// from http://todomvc.com (knockoutjs example)
+var ENTER_KEY = 13;
+function keyhandlerBindingFactory(keyCode) {
+	return {
+		init: function (element, valueAccessor, allBindingsAccessor, data, bindingContext) {
+			var wrappedHandler, newValueAccessor;
+
+			// wrap the handler with a check for the enter key
+			wrappedHandler = function (data, event) {
+				if (event.keyCode === keyCode) {
+					valueAccessor().call(this, data, event);
+				}
+			};
+
+			// create a valueAccessor with the options that we would want to pass to the event binding
+			newValueAccessor = function () {
+				return {
+					keyup: wrappedHandler
+				};
+			};
+
+			// call the real event binding's init function
+			ko.bindingHandlers.event.init(element, newValueAccessor, allBindingsAccessor, data, bindingContext);
+		}
+	};
+}
+ko.bindingHandlers.enterKey = keyhandlerBindingFactory(ENTER_KEY); // a custom binding to handle the enter key
+
+var Place_list = function(data) {
+    this.title = ko.observable(data.title);
+    this.location = ko.observable(data.location);
+};
+
+var Route_list = function(data) {
+	this.name = ko.observable(data.name);
+	this.route_info = ko.observable(data.route_info);
+	this.selected = ko.observable(data.selected);
+};
+
+
+
 ////// VIEWMODEL
 var ViewModel = function(startRouteData, startPositionData) {
     //important trick!! self!!
@@ -36,7 +79,10 @@ var ViewModel = function(startRouteData, startPositionData) {
     this.searched= ko.observableArray();
 
 	// This stores the recent results of search. (up to 5)
-	this.found = ko.observableArray();
+	this.found = ko.observableArray([]);
+    _.each(startPositionData, function(place) {
+        self.startPosition.push(new Place_list(place));
+    });
 
 	// enterKeyPress event
 	this.enterKeyPress = function(data, event) {
@@ -52,7 +98,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 	// locates it, and then zooms into that area.
 	// It also fires <getGeocodeDetails> function or <getAddressDetails>
 	// based on the search input
-	this.getSearch = function(infowindow, click) {
+	this.getSearch = function(infowindow, place_id) {
 
 		// reset all the markers
 	    self.hideMarkers();
@@ -60,26 +106,30 @@ var ViewModel = function(startRouteData, startPositionData) {
 		self.searched.removeAll();
 
 		var geocoder = new google.maps.Geocoder();
-
-		// #1 : this applys when you search by enterKEY
 	    var address = document.getElementById('searchInput').value;
-		// #2 : this applys when you "click" the found places
-		if (typeof click === 'string') {
-			address = click;
-		}
 
-	    // Make sure the address isn't blank.
-	    if (!address){
+	    // Make sure the address and plae_id isn't both blank.
+	    if (!address && !place_id){
 	        window.alert('You must enter an area, or address.');
 	    } else {
 	        // Geocode the address/area entered to get the center. Then, center the map
 	        // on it and zoom in
-	        geocoder.geocode({
-	            address: address,
-	            componentRestrictions: {
-	                // locality: 'Japan'
-	            }
-	        }, function(results, status) {
+            var input;
+            if (place_id) {
+    		// #1 : this applys when you search by enterKEY
+                input = {
+                    placeId: place_id,
+    	            componentRestrictions: {}
+                    };
+            } else {
+    		// #2 : this applys when you "click" the found places
+                input = {
+    	            address: address,
+    	            componentRestrictions: {}
+                };
+            }
+
+	        geocoder.geocode(input, function(results, status) {
 	            if (status == google.maps.GeocoderStatus.OK) {
 	                // Center the map to the FIRST result
 	                map.setCenter(results[0].geometry.location);
@@ -92,20 +142,10 @@ var ViewModel = function(startRouteData, startPositionData) {
 	                    markMarkers(location, title, infowindow, 0);
 	                    // push the result in
 	                    self.getGeocodeDetails(result);
-						// to remember
-						self.found.unshift(result);
-						// remove extras
-						if (self.found().length > 5) {
-							var sliced = self.found().slice(0,4);
-							self.found.removeAll();
-							for (i=0; i<sliced.length; i++){
-								self.found.push(sliced[i]);
-							}
-							// var sliced = self.found().shift();
-						}
 	                });
 	                map.setZoom(15);
 	            } else {
+                    // push the result in
 					self.getAddressDetails(address);
 	            }
 	        });
@@ -128,9 +168,23 @@ var ViewModel = function(startRouteData, startPositionData) {
 						resultHTML : self.resultGeocodeHTML(),
 						location : place.geometry.location
 					});
+                    self.loadPlaceInfo(place.name);
 		        }
+    			// to remember
+    			self.found.unshift(place);
+    			// remove extras
+    			if (self.found().length > 5) {
+    				var sliced = self.found().slice(0,4);
+    				self.found.removeAll();
+    				for (i=0; i<sliced.length; i++){
+    					self.found.push(sliced[i]);
+    				}
+    			}
 		    });
-		}
+		} else {
+            window.alert('We could not find that location - try entering a more' +
+            ' specific place.');
+        }
 
 		function makeHTML(place) {
             var innerHTML = '<div>';
@@ -150,26 +204,6 @@ var ViewModel = function(startRouteData, startPositionData) {
                     maxWidth: 200
                 }) + '">';
             }
-            // loadPlaceInfo(place.name, function(wikiResult){
-            //     var wikiHTML = '<ul>';
-            //     var resultNum;
-            //     // restrict the number of result to 0 to 3
-            //     if(wikiResult[1].length > 3){
-            //         resultNum = 3;
-            //     } else {
-            //         resultNum = wikiResult[1].length;
-            //     }
-            //     for (i=0; i<resultNum; i++){
-            //         wikiHTML += '<li>' + wikiResult[1][i] + '</li>';
-            //         wikiHTML += '<li>' + wikiResult[2][i] + '</li>';
-            //         wikiHTML += '<li>' + wikiResult[3][i] + '</li>';
-            //     }
-            //     wikiHTML += '</ul>';
-            //
-            //     // add it to the innerHTML
-            //     innerHTML += wikiHTML;
-            //     self.resultGeocodeHTML(innerHTML);
-            // });
             innerHTML += '</div>';
             self.resultGeocodeHTML(innerHTML);
 		}
@@ -188,8 +222,12 @@ var ViewModel = function(startRouteData, startPositionData) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
 				var count =0;
 				for(i=0; i<results.length; i++){
-                    
                     var place =results[i];
+
+                    // only for the first result
+                    if (i === 0){
+                        self.loadPlaceInfo(place.name);
+                    }
 
 					if(count<3) {
 						markMarkers(place.geometry.location, place.name, largeInfowindow, 0);
@@ -203,7 +241,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 						count++;
 					}
 				}
-
 				//Remember it in the founds-sidebar
 				self.found.unshift(results[0]);
 				if (self.found().length > 4) {
@@ -224,8 +261,6 @@ var ViewModel = function(startRouteData, startPositionData) {
             var innerHTML = '<div>';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
-                console.log("done");
-                loadPlaceInfo(place.name);
             }
             if (place.formatted_address) {
                 innerHTML += '<br>' + place.formatted_address;
@@ -247,12 +282,12 @@ var ViewModel = function(startRouteData, startPositionData) {
 	// function to select between name and address components of differect search results
 	// by this result, found places can have appropriate names
 	this.getFound = function(entry) {
-		// if it has address_components, return short_name
-		if (entry.address_components) {
-			return entry.address_components[0].short_name;
-		// if it does not, return name
-		}else {
+		// if it has name, return short_name
+		if (entry.name) {
 			return entry.name;
+		// as a fall back, return addres components
+		} else {
+			return entry.address_components[0].short_name;
 		}
 	};
 
@@ -263,12 +298,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 
     // ko.array for holding routes
     this.routes = ko.observableArray(startRouteData);
-	// ----- kept for furter test ------
-    // this.routes = ko.observableArray([]);
-    // _.each(startRouteData, function(route){
-    //     self.routes.push(new Route_list(route));
-    // });
-	// ----- kept for furter test ------
 
     // ko.observable for taking in the input from the user
     this.routeToAdd = ko.observable("");
@@ -312,12 +341,10 @@ var ViewModel = function(startRouteData, startPositionData) {
 			if (pulled.route_info.origin === undefined){
 				pulled.route_info.origin = location;
 				self.routes.replace(self.routes()[self.currentRouteIndex()], pulled);
-				console.log('origin in');
 
 			} else if (pulled.route_info.destination === undefined && pulled.route_info.origin !== location) {
 				pulled.route_info.destination = location;
 				self.routes.replace(self.routes()[self.currentRouteIndex()], pulled);
-				console.log('destination in');
 
 			} else if (pulled.route_info.destination !== location && pulled.route_info.origin !== location){
 				var obj = {
@@ -326,7 +353,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 				};
 				pulled.route_info.waypoints.push(obj);
 				self.routes.replace(self.routes()[self.currentRouteIndex()], pulled);
-				console.log('waypoint in');
 			}
 
 			// refresh displayRoute
@@ -346,7 +372,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 	// googles directions service
 	this.displayRoute = function(bool_routeSelect, event) {
 
-		console.log(event);
 		if (event !== undefined) {
 			// reset
 			$('.item-holder').removeClass('pressed');
@@ -409,6 +434,56 @@ var ViewModel = function(startRouteData, startPositionData) {
 	        markers[i].setMap(null);
 	    }
 	};
+
+
+    this.wikiResult = ko.observable();
+    // this function is for mediawiki AJAX request
+    this.loadPlaceInfo = function(search, cb) {
+
+     $.ajax({
+         asnyc: true,
+         dataType: "jsonp",
+         type: "GET",
+         url: "https://ko.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&format=json",
+         success: function(wikiResult, status) {
+                var wikiHTML;
+                var resultNum;
+
+                // if there is no results from wiki, send out this message
+                if(wikiResult[1].length === 0) {
+                    wikiHTML = '<ul><li>' + 'no results from wiki' + '</li></ul>';
+
+                } else {
+                    wikiHTML = '<ul>';
+                    // restrict the number of result to 0 to 3
+                    if(wikiResult[1].length > 3){
+                        resultNum = 3;
+                    } else {
+                        resultNum = wikiResult[1].length;
+                    }
+                    for (i=0; i<resultNum; i++){
+                        wikiHTML += '<li class="placeTitle">' + wikiResult[0] + '</li>';
+                        wikiHTML += '<li class="placeName">' + wikiResult[1][i] + '</li>';
+                        wikiHTML += '<li class="placeDesc">' + wikiResult[2][i] + '</li>';
+                    }
+                    wikiHTML += '</ul>';
+                }
+
+                self.wikiResult(wikiHTML);
+
+             if (cb) {
+                 cb();
+             }
+         },
+         error: function(result, status, err) {
+             alert("error with connection from mediawiki: " + status);
+             //run only the callback without attempting to parse result due to error
+             if (cb) {
+                 cb();
+             }
+         }
+     });
+    };
 };
 
 /////// INITMAP
@@ -445,32 +520,6 @@ function initMap() {
     map.fitBounds(bounds);
 }
 
-// This is an 3rd party API use: Naver
- function loadPlaceInfo(search, cb) {
-
-     resultHTML = '<div>';
-
-     $.ajax({
-         asnyc: true,
-         dataType: "jsonp",
-         type: "GET",
-         url: "https://ko.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&format=json",
-         success: function(result, status) {
-             console.log(status);
-
-             if (cb) {
-                 cb(result);
-             }
-         },
-         error: function(result, status, err) {
-             console.log("error with connection from mediawiki: " + status);
-             //run only the callback without attempting to parse result due to error
-             if (cb) {
-                 cb();
-             }
-         }
-     });
- }
 
 ////// GLOBAL varaibles and functions
 
@@ -479,49 +528,7 @@ var map;
 // share 'largeInfowindow; as Global variable
 var largeInfowindow;
 
-// this is a factory function we can use to create binding handlers for specific // keycodes.
-// from http://todomvc.com (knockoutjs example)
-var ENTER_KEY = 13;
-function keyhandlerBindingFactory(keyCode) {
-	return {
-		init: function (element, valueAccessor, allBindingsAccessor, data, bindingContext) {
-			var wrappedHandler, newValueAccessor;
 
-			// wrap the handler with a check for the enter key
-			wrappedHandler = function (data, event) {
-				if (event.keyCode === keyCode) {
-					valueAccessor().call(this, data, event);
-				}
-			};
-
-			// create a valueAccessor with the options that we would want to pass to the event binding
-			newValueAccessor = function () {
-				return {
-					keyup: wrappedHandler
-				};
-			};
-
-			// call the real event binding's init function
-			ko.bindingHandlers.event.init(element, newValueAccessor, allBindingsAccessor, data, bindingContext);
-		}
-	};
-}
-ko.bindingHandlers.enterKey = keyhandlerBindingFactory(ENTER_KEY); // a custom binding to handle the enter key
-
-var Found_list = function(data){
-    this.placeDetail = ko.observable(data.placeDetail);
-};
-
-var Place_list = function(data) {
-    this.title = ko.observable(data.title);
-    this.location = ko.observable(data.location);
-};
-
-var Route_list = function(data) {
-	this.name = ko.observable(data.name);
-	this.route_info = ko.observable(data.route_info);
-	this.selected = ko.observable(data.selected);
-};
 
 // marking the Markers with added functionalty of Event-trigger
 function markMarkers(location, title, Infowindow, order) {

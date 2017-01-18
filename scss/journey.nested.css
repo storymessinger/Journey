@@ -16,7 +16,7 @@
 
 html {
     font-size: 16px;
-    font-family: 'Lemonada', cursive; }
+    font-family: 'Lemonada', 'Jeju Gothic', cursive; }
 
 body {
     display: flex;
@@ -32,10 +32,7 @@ body {
         body .wrapper #sidebar_btn {
             position: fixed;
             top: 1rem;
-            left: 1rem;
-            box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12); }
-        body .wrapper #sidebar_btn:active {
-            box-shadow: none; }
+            left: 2rem; }
         body .wrapper section {
             flex-grow: 1;
             display: flex; }
@@ -43,6 +40,13 @@ body {
                 z-index: 1000;
                 position: absolute;
                 top: 1rem;
+                right: 1rem;
+                display: flex;
+                flex-flow: column; }
+            body .wrapper section .wikiResult {
+                z-index: 1000;
+                position: absolute;
+                bottom: 1rem;
                 right: 1rem;
                 display: flex;
                 flex-flow: column; }
@@ -61,11 +65,14 @@ body {
         border-radius: 8px;
         border: 0;
         color: #f7f7f7;
-        opacity: 0; }
+        opacity: 0;
+        box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12); }
     .sidebar #sidebar_btn:hover {
         background-color: #8B0000; }
     .sidebar #sidebar_btn:focus {
         outline: none; }
+    .sidebar #sidebar_btn:active {
+        box-shadow: none; }
     .sidebar ul {
         list-style: none;
         padding: 0; }
@@ -168,27 +175,43 @@ body {
         display: block;
         position: fixed;
         height: 100vh;
-        width: 16rem;
+        width: 18rem;
         left: -18rem;
         z-index: 1001;
         transition: all 0.3s ease; }
         .sidebar #sidebar_btn {
             opacity: 1;
-            display: block;
             position: absolute;
-            top: 2rem;
-            left: 2rem;
             z-index: 1000; }
     .unfolded {
         left: 0rem; } }
 
 @media (max-width: 500px) {
-    .zoom-search {
+    .zoom-search, .wikiResult {
         max-width: 80vw;
         margin: auto; }
     .search-ul {
         max-width: 80vw;
         margin: auto; } }
+
+section .wikiResult {
+    background-color: #FFE781;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    width: 400px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
+    max-height: 300px;
+    overflow-y: scroll; }
+    section .wikiResult ul {
+        list-style: none;
+        padding: 0;
+        margin: 1rem; }
+        section .wikiResult ul .placeTitle {
+            font-size: 1rem; }
+        section .wikiResult ul .placeName, section .wikiResult ul .placeDesc {
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            color: #7a7e7e; }
 
 section .search-bar {
     margin-top: 2.8rem; }

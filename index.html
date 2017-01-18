@@ -5,6 +5,7 @@
     <title>Journey</title>
 
     <link href="https://fonts.googleapis.com/css?family=Lemonada:300,400,600,700" rel="stylesheet">
+    <link href="http://fonts.googleapis.com/earlyaccess/jejugothic.css" rel="stylesheet">
     <link rel="stylesheet" href="scss/normalize.css">
     <link rel="stylesheet" href="scss/journey.min.css">
 
@@ -16,7 +17,7 @@
             <button data-bind="click: sidebarFold" type="button" id="sidebar_btn">Sidebar</button>
             <p>Recent Places:</p>
             <ul class="foundBox" data-bind="foreach: found">
-                    <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.formatted_address), text: $parent.getFound($data)"></li>
+                    <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.place_id), text: $parent.getFound($data)"></li>
             </ul>
 
             <form data-bind="submit: addRoute" id="addRoute">
@@ -56,6 +57,8 @@
                         </div>
                     </div>
                 </ul>
+            </div>
+            <div class="wikiResult" data-bind="html: wikiResult">
             </div>
             <div class="google-map" id="map"></div>
         </section>

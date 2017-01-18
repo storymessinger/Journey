@@ -67,4 +67,16 @@ var init_places = [
         lat: 51.501135,
         lng: -0.177372
     }
+}, {
+    title: 'London Eye',
+    location: {
+        lat: 51.503334,
+        lng: -0.118959
+    }
+}, {
+    title: 'National Theater',
+    location: {
+        lat: 51.507004,
+        lng: -0.114034
+    }
 }];
