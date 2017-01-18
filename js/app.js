@@ -134,6 +134,7 @@ var ViewModel = function(startRouteData, startPositionData) {
             var innerHTML = '<div>';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
+                loadPlaceInfo(place.name);
             }
             if (place.formatted_address) {
                 innerHTML += '<br>' + place.formatted_address;
@@ -201,7 +202,7 @@ var ViewModel = function(startRouteData, startPositionData) {
             var innerHTML = '<div>';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
-                console.dir(loadPlaceInfo(place.name));
+                loadPlaceInfo(place.name);
             }
             if (place.formatted_address) {
                 innerHTML += '<br>' + place.formatted_address;
@@ -427,6 +428,7 @@ function initMap() {
     //  var feedUrl = allFeeds[id].url,
     //      feedName = allFeeds[id].name;
     var info = {
+        // X-Naver-Client-Id :
         query : "search",
         display : "10",
         start : "1",
