@@ -432,7 +432,7 @@ function initMap() {
      $.ajax({
        dataType: "json",
        type: "GET",
-       url: 'https://openapi.naver.com/v1/search/blog.json',
+       url: 'https://openapi.naver.com/v1/search/blog.json?clientId=bvVpXB9MpSn7t7LLANOC',
        data: JSON.stringify(info),
        success: function (result, status){
 
