@@ -134,6 +134,7 @@ var ViewModel = function(startRouteData, startPositionData) {
             var innerHTML = '<div>';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
+                console.log("in");
                 loadPlaceInfo(place.name);
             }
             if (place.formatted_address) {
@@ -195,6 +196,7 @@ var ViewModel = function(startRouteData, startPositionData) {
             var innerHTML = '<div>';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
+                console.log("done");
                 loadPlaceInfo(place.name);
             }
             if (place.formatted_address) {
