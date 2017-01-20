@@ -113,6 +113,11 @@ body {
     }
 }
 
+#pano {
+    width: 280px;
+    height: 280px;
+}
+
 // sidebar design
 .sidebar {
     background-color: $primary-color;
@@ -353,6 +358,9 @@ section {
 
             // vertically align inputs
             display:flex;
+            #searchFilter {
+                margin-left: 1rem;
+            }
 
             // input border none, google style?
             #searchInput {

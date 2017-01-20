@@ -48,35 +48,44 @@ var init_routes = [
 
 var init_places = [
     {
-    title: 'Big Ben',
-    location: {
-        lat: 51.500650,
-        lng: -0.122075
+    name: 'Big Ben',
+    geometry : {
+        location: {
+            lat: 51.500650,
+            lng: -0.122075
+        }
     }
 
 }, {
-    title: 'Westminster',
-    location: {
-        lat: 51.499531,
-        lng: -0.123856
-    }
-
-}, {
-    title: 'RCA',
-    location: {
-        lat: 51.501135,
-        lng: -0.177372
+    name: 'Westminster',
+    geometry : {
+        location: {
+            lat: 51.499531,
+            lng: -0.123856
+        }
     }
 }, {
-    title: 'London Eye',
-    location: {
-        lat: 51.503334,
-        lng: -0.118959
+    name: 'RCA',
+    geometry : {
+        location: {
+            lat: 51.501135,
+            lng: -0.177372
+        }
     }
 }, {
-    title: 'National Theater',
-    location: {
-        lat: 51.507004,
-        lng: -0.114034
+    name: 'London Eye',
+    geometry : {
+        location: {
+            lat: 51.503334,
+            lng: -0.118959
+        }
+    }
+}, {
+    name: 'National Theater',
+    geometry : {
+        location: {
+            lat: 51.507004,
+            lng: -0.114034
+        }
     }
 }];

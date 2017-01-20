@@ -58,12 +58,10 @@ var ViewModel = function(startRouteData, startPositionData) {
 
 	// get the largeInfowindow in to the ViewModel scope
 	this.largeInfowindow = largeInfowindow;
-
-    // getting the places into the map list
-    this.startPosition = ko.observableArray([]);
-    _.each(startPositionData, function(place) {
-        self.startPosition.push(new Place_list(place));
-    });
+    // initiateInfowindow
+    this.initiateInfowindow = function(){
+        self.largeInfowindow();
+    };
 
     // bind the event to the sidebar_btn
     this.sidebarFold = function(data, event) {
@@ -80,9 +78,9 @@ var ViewModel = function(startRouteData, startPositionData) {
 
 	// This stores the recent results of search. (up to 5)
 	this.found = ko.observableArray([]);
-    _.each(startPositionData, function(place) {
-        self.startPosition.push(new Place_list(place));
-    });
+    // _.each(startPositionData, function(place) {
+    //     self.found.push(new Place_list(place));
+    // });
 
 	// enterKeyPress event
 	this.enterKeyPress = function(data, event) {
@@ -113,13 +111,23 @@ var ViewModel = function(startRouteData, startPositionData) {
 	    if (!address && !place_id){
 	        window.alert('You must enter an area, or address.');
         } else if ($('#searchFilter').val() === "recent") {
-            // console.log(self.found());
-            var f = self.found().map(function(place){
-                if (place.name.includes(address)){
-                    return place;
-                }
+            var f = self.found().filter(function(place){
+                return place.name.toLowerCase().includes(address.toLowerCase());
             });
             console.log(f);
+            boundMarkers(f);
+
+            // have to search it up using the <Address> keyword
+            // and get back the search result
+            // than using the <name> part,
+            // should compare that with the existing self.founds()
+            // 1. should make capital letter LOWER (bothe address and findings)
+            // 2. should show error messages alerting that there is no search results
+            // among the findings
+            // 3. should use other than names. espcially <types>
+            // 4. name should be a match, or maybe...some other search type
+            // such as not char base but a word base
+
         } else {
 	        // Geocode the address/area entered to get the center. Then, center the map
 	        // on it and zoom in
@@ -181,6 +189,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 		        }
     			// to remember
     			self.found.unshift(place);
+                console.log(self.found());
     			// remove extras
     			if (self.found().length > 10) {
     				var sliced = self.found().slice(0,9);
@@ -250,7 +259,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 						count++;
 					}
 				}
-                console.log(self.found());
 				//Remember it in the founds-sidebar
 				self.found.unshift(results[0]);
 				if (self.found().length > 10) {
@@ -492,6 +500,11 @@ var ViewModel = function(startRouteData, startPositionData) {
     };
 };
 
+// share 'map' as a Global variable
+var map;
+// share 'largeInfowindow; as Global variable
+var largeInfowindow;
+
 /////// INITMAP
 function initMap() {
     var self = this;
@@ -503,41 +516,42 @@ function initMap() {
     });
     // making an instance of a infowindow
     largeInfowindow = new google.maps.InfoWindow();
-    // This autocomplete is for use in the geocoder entry box.
-    var zoomAutocomplete = new google.maps.places.Autocomplete(document.getElementById('searchInput'));
-    // This makes bounding easier
-    var bounds = new google.maps.LatLngBounds();
-    //Bias the boundaries within the map for the zoom to area text.
-    zoomAutocomplete.bindTo('bounds', map);
-    // The following group uses the location array to create an array of markers
-    // """on initialize""".
-    init_places.forEach(function(place){
-        // Get the position from the location array.
-        var position = place.location;
-        var title = place.title;
-        //** Create a marker per location, and put into markers array.
-        markMarkers(position, title, largeInfowindow);
-    });
-    //Extend the boundaries of the map
-    markers.forEach(function(item){
-        bounds.extend(item.position);
-    });
-    // make map fit into the boundaries
-    map.fitBounds(bounds);
+
+    boundMarkers(init_places);
+
 }
 
 
 ////// GLOBAL varaibles and functions
+function boundMarkers(findLocation){
+    // This makes bounding easier
+    var bounds = new google.maps.LatLngBounds();
+    // This autocomplete is for use in the geocoder entry box.
+    var zoomAutocomplete = new google.maps.places.Autocomplete(document.getElementById('searchInput'));
+    //Bias the boundaries within the map for the zoom to area text.
+    zoomAutocomplete.bindTo('bounds', map);
 
-// share 'map' as a Global variable
-var map;
-// share 'largeInfowindow; as Global variable
-var largeInfowindow;
+    // The following group uses the location array to create an array of markers
+    // """on initialize""".
+    findLocation.forEach(function(place){
+        // Get the position from the location array.
+        var position = place.geometry.location;
+        var title = place.name;
+        //Extend the boundaries of the map
+        bounds.extend(place.geometry.location);
+        //** Create a marker per location, and put into markers array.
+        markMarkers(position, title, largeInfowindow);
+    });
+    // findLocation.forEach(function(item){
+    //     bounds.extend(item.geometry.location);
+    // });
+    // make map fit into the boundaries
+    map.fitBounds(bounds);
 
-
+}
 
 // marking the Markers with added functionalty of Event-trigger
-function markMarkers(location, title, Infowindow, order) {
+function markMarkers(location, title, Infowindow) {
     var thisInfowindow = Infowindow;
 
     var marker = new google.maps.Marker({
@@ -545,7 +559,6 @@ function markMarkers(location, title, Infowindow, order) {
         position: location,
         title: title,
         animation: google.maps.Animation.DROP
-        // id: order
     });
     // Push the marker to our array of markers.
     markers.push(marker);
@@ -577,6 +590,7 @@ function populateInfoWindow(marker, infowindow) {
         var getStreetView =function(data, status) {
             if (status == google.maps.StreetViewStatus.OK) {
                 var nearStreetViewLocation = data.location.latLng;
+                console.dir(nearStreetViewLocation);
                 var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
                 infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
                 var panoramaOptions = {
