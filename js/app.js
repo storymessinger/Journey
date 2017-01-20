@@ -101,7 +101,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 		var geocoder = new google.maps.Geocoder();
 	    var address = document.getElementById('searchInput').value;
 
-
 	    // Make sure the address and place_id isn't both blank.
         // #1
 	    if (!address && !place_id){
@@ -115,10 +114,12 @@ var ViewModel = function(startRouteData, startPositionData) {
                 if (place.name.toLowerCase().split(' ').includes(address.toLowerCase())){
                     return true;
                 }
-                if (place.formatted_address.toLowerCase().split(', ').includes(address.toLowerCase())){
+                if (place.formatted_address.toLowerCase().split(/[,\s]+/).includes(address.toLowerCase())){
                     return true;
                 }
-                // return (place.name.toLowerCase() === address.toLowerCase() || place.name.toLowerCase().split(' ').includes(address.toLowerCase()));
+                if (place.types.includes(address.toLowerCase())) {
+                    return true;
+                }
             });
             if (searchRecent[0] === undefined){
                 alert('no search results found among recent findings');
@@ -126,17 +127,15 @@ var ViewModel = function(startRouteData, startPositionData) {
                 // self.hideMarkers();
                 boundMarkers(searchRecent);
             }
-
-            // have to search it up using the <Address> keyword
-            // and get back the search result
-            // than using the <name> part,
-            // should compare that with the existing self.founds()
-            // 3. should use other than names. espcially <types>
-            // 4. name should be a match, or maybe...some other search type
-            // such as not char base but a word base
-
+        }
         // #3
-        } else {
+        // Always search in Places library when select option is Nearby Search
+        else if($('#searchFilter').val() === "nearby"){
+			self.getAddressDetails(address);
+            map.setZoom(15);
+        }
+        // #4
+         else {
 	        // Geocode the address/area entered to get the center. Then, center the map
 	        // on it and zoom in
             var input;
@@ -156,13 +155,8 @@ var ViewModel = function(startRouteData, startPositionData) {
 
 	        geocoder.geocode(input, function(results, status) {
 	            if (status == google.maps.GeocoderStatus.OK) {
-                    // Always search in Places library when select option is Nearby Search
-                    if($('#searchFilter').val() === "nearby"){
-    					self.getAddressDetails(address);
-                        map.setZoom(15);
-    	            }
                     // Search with geocode library
-                    else if(results[0].partial_match !== true){
+                    if(results[0].partial_match !== true){
     	                // Center the map to the FIRST result
     	                map.setCenter(results[0].geometry.location);
     	                // For every result found, markers are place on top
