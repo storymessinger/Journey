@@ -15,7 +15,7 @@
     <div class="wrapper">
         <sidebar class="sidebar">
             <button data-bind="click: sidebarFold" type="button" id="sidebar_btn">Sidebar</button>
-            <p>Recent Places:</p>
+            <p>Recent 10 Places:</p>
             <ul class="foundBox" data-bind="foreach: found">
                     <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.place_id), text: $parent.getFound($data)"></li>
             </ul>
@@ -45,8 +45,8 @@
                 </div>
                 <form class="zoom-search">
                     <select id="searchFilter">
-                        <option value="world">World</option>
-                        <option value="recent">Recent Findings</option>
+                        <option value="world">World Search</option>
+                        <option value="recent">Filter Recent Search (eg. london)</option>
                     </select>
                 </form>
                 <ul data-bind="foreach: searched" class="search-ul">

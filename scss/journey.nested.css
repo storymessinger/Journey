@@ -53,6 +53,10 @@ body {
             body .wrapper section .google-map {
                 flex-grow: 1; }
 
+#pano {
+    width: 280px;
+    height: 280px; }
+
 .sidebar {
     background-color: #74daad;
     border-right: 2px solid #FFE781;
@@ -200,18 +204,19 @@ section .wikiResult {
     border-radius: 0.5rem;
     width: 400px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: scroll; }
     section .wikiResult ul {
         list-style: none;
         padding: 0;
         margin: 1rem; }
-        section .wikiResult ul .placeTitle {
-            font-size: 1rem; }
-        section .wikiResult ul .placeName, section .wikiResult ul .placeDesc {
+        section .wikiResult ul .placeName {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem; }
+        section .wikiResult ul .placeDesc {
             font-size: 0.8rem;
-            margin-bottom: 1rem;
-            color: #7a7e7e; }
+            margin-bottom: 0.8rem;
+            color: #0a0a0a; }
 
 section .search-bar {
     margin-top: 2.8rem; }
@@ -223,6 +228,8 @@ section .search-bar {
         width: 400px;
         box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
         display: flex; }
+        section .search-bar .zoom-search #searchFilter {
+            margin-left: 1rem; }
         section .search-bar .zoom-search #searchInput {
             position: relative;
             width: 100%;
@@ -250,6 +257,9 @@ section .search-bar {
                 width: 100%;
                 min-height: 100px;
                 box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16); }
+                section .search-bar .search-ul .search-holder .search-result .search-desc {
+                    margin: 0.5rem 0 0.5rem 1rem;
+                    color: black; }
             section .search-bar .search-ul .search-holder .btns {
                 bottom: 1rem;
                 right: 0;

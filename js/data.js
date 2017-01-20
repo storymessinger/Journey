@@ -48,44 +48,88 @@ var init_routes = [
 
 var init_places = [
     {
-    name: 'Big Ben',
+    address_components: [
+        {
+            long_name: "London",
+            short_name: "London"
+        }
+    ],
+    formatted_address: "Westminster, London SW1A 0AA, UK",
+    place_id : "ChIJ2dGMjMMEdkgRqVqkuXQkj7c",
+    name: "Big Ben",
     geometry : {
         location: {
-            lat: 51.500650,
-            lng: -0.122075
+            lat: 51.500889,
+            lng: -0.124636
         }
-    }
-
+    },
+    types: ["premise","point_of_interest","establishment"]
 }, {
-    name: 'Westminster',
+    address_components: [
+        {
+            long_name: "Westminster",
+            short_name: "Westminster"
+        }
+    ],
+    formatted_address: "Westminster, London, UK",
+    place_id : "ChIJVbSVrt0EdkgRQH_FO4ZkHc0",
+    name: "Westminster",
     geometry : {
         location: {
             lat: 51.499531,
             lng: -0.123856
         }
-    }
+    },
+    types: ["neighborhood","political"]
 }, {
-    name: 'RCA',
+    address_components: [
+        {
+            long_name:"Kensington Gore",
+            short_name: "Kensington Gore"
+        }
+    ],
+    formatted_address: "Kensington Gore, Kensington, London SW7 2EU, UK",
+    place_id : "ChIJM8PHBFsFdkgRFJMllTutvtg",
+    name: "Royal College of Art",
     geometry : {
         location: {
             lat: 51.501135,
             lng: -0.177372
         }
-    }
+    },
+    types: ["university","point_of_interest","establishment"]
 }, {
+    address_components: [
+        {
+            long_name:"London",
+            short_name: "London"
+        }
+    ],
+    formatted_address: "Lambeth, London SE1 7PB, UK",
+    place_id : "ChIJc2nSALkEdkgRkuoJJBfzkUI",
     name: 'London Eye',
     geometry : {
         location: {
             lat: 51.503334,
             lng: -0.118959
         }
-    }
+    },
+    types: ["point_of_interest","establishment"]
 }, {
-    name: 'National Theater',
+    address_components: [
+        {
+            long_name:"Upper Ground",
+            short_name: "Upper Ground"
+        }
+    ],
+    formatted_address: "Upper Ground, South Bank, London SE1 9PX, UK",
+    place_id : "ChIJdYvbqaMEdkgRDdOt_IfsYRc",
+    name: "National Theatre",
     geometry : {
         location: {
             lat: 51.507004,
             lng: -0.114034
         }
-    }
+    },
+    types: ["point_of_interest","establishment"]
 }];

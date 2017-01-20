@@ -38,11 +38,6 @@ function keyhandlerBindingFactory(keyCode) {
 }
 ko.bindingHandlers.enterKey = keyhandlerBindingFactory(ENTER_KEY); // a custom binding to handle the enter key
 
-var Place_list = function(data) {
-    this.title = ko.observable(data.title);
-    this.location = ko.observable(data.location);
-};
-
 var Route_list = function(data) {
 	this.name = ko.observable(data.name);
 	this.route_info = ko.observable(data.route_info);
@@ -78,9 +73,9 @@ var ViewModel = function(startRouteData, startPositionData) {
 
 	// This stores the recent results of search. (up to 5)
 	this.found = ko.observableArray([]);
-    // _.each(startPositionData, function(place) {
-    //     self.found.push(new Place_list(place));
-    // });
+    _.each(startPositionData, function(place) {
+        self.found.push(place);
+    });
 
 	// enterKeyPress event
 	this.enterKeyPress = function(data, event) {
@@ -107,27 +102,40 @@ var ViewModel = function(startRouteData, startPositionData) {
 	    var address = document.getElementById('searchInput').value;
 
 
-	    // Make sure the address and plae_id isn't both blank.
+	    // Make sure the address and place_id isn't both blank.
+        // #1
 	    if (!address && !place_id){
-	        window.alert('You must enter an area, or address.');
+	        window.alert("You must enter an area, or address.");
+        // #2
         } else if ($('#searchFilter').val() === "recent") {
-            var f = self.found().filter(function(place){
-                return place.name.toLowerCase().includes(address.toLowerCase());
+            var searchRecent = self.found().filter(function(place){
+                if (place.name.toLowerCase() === address.toLowerCase()){
+                    return true;
+                }
+                if (place.name.toLowerCase().split(' ').includes(address.toLowerCase())){
+                    return true;
+                }
+                if (place.formatted_address.toLowerCase().split(', ').includes(address.toLowerCase())){
+                    return true;
+                }
+                // return (place.name.toLowerCase() === address.toLowerCase() || place.name.toLowerCase().split(' ').includes(address.toLowerCase()));
             });
-            console.log(f);
-            boundMarkers(f);
+            if (searchRecent[0] === undefined){
+                alert('no search results found among recent findings');
+            } else {
+                // self.hideMarkers();
+                boundMarkers(searchRecent);
+            }
 
             // have to search it up using the <Address> keyword
             // and get back the search result
             // than using the <name> part,
             // should compare that with the existing self.founds()
-            // 1. should make capital letter LOWER (bothe address and findings)
-            // 2. should show error messages alerting that there is no search results
-            // among the findings
             // 3. should use other than names. espcially <types>
             // 4. name should be a match, or maybe...some other search type
             // such as not char base but a word base
 
+        // #3
         } else {
 	        // Geocode the address/area entered to get the center. Then, center the map
 	        // on it and zoom in
@@ -205,7 +213,7 @@ var ViewModel = function(startRouteData, startPositionData) {
         }
 
 		function makeHTML(place) {
-            var innerHTML = '<div>';
+            var innerHTML = '<div class="search-desc">';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
 
@@ -276,7 +284,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 
 		function makeHTML_place(place) {
 
-            var innerHTML = '<div>';
+            var innerHTML = '<div class="search-desc">';
             if (place.name) {
                 innerHTML += '<strong>' + place.name + '</strong>';
             }
@@ -458,7 +466,7 @@ var ViewModel = function(startRouteData, startPositionData) {
          asnyc: true,
          dataType: "jsonp",
          type: "GET",
-         url: "https://ko.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&format=json",
+         url: "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&format=json",
          success: function(wikiResult, status) {
                 var wikiHTML;
                 var resultNum;
@@ -470,14 +478,15 @@ var ViewModel = function(startRouteData, startPositionData) {
                 } else {
                     wikiHTML = '<ul>';
                     // restrict the number of result to 0 to 3
-                    if(wikiResult[1].length > 3){
-                        resultNum = 3;
+                    if(wikiResult[1].length > 2){
+                        resultNum = 2;
                     } else {
                         resultNum = wikiResult[1].length;
                     }
+
+                    //
                     for (i=0; i<resultNum; i++){
-                        wikiHTML += '<li class="placeTitle">' + wikiResult[0] + '</li>';
-                        wikiHTML += '<li class="placeName">' + wikiResult[1][i] + '</li>';
+                        wikiHTML += '<li class="placeName">'+ i +'. '+ wikiResult[1][i] + '</li>';
                         wikiHTML += '<li class="placeDesc">' + wikiResult[2][i] + '</li>';
                     }
                     wikiHTML += '</ul>';
