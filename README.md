@@ -12,7 +12,7 @@ This could be used ...
 
 #### "World Search" : Search address/places around the world
 1. You are able to search many places via Google Map API service with the search bar provided.(via Google Map Geocode Library)
-![img01](README_img/worldSearch_img_01.png)
+![img01](https://github.com/storymessinger/Journey/README_img/worldSearch_img_01.png)
 2. This search has a fallback. When the result is not sure (partial search = true), it falls back on **Nearby Search**, and uses Google Map Places Libary.
 3. What you have searched(recent search) is remembered on the left side, top of the sidebar. (up to 10 search results)
 	- You can click the recent search results, and it will automatically find it again
