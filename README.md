@@ -11,12 +11,15 @@ This could be used ...
 ## How to use the application
 
 #### "World Search" : Search address/places around the world
-1. You are able to search many places via Google Map API service with the search bar provided.(via Google Map Places Library or Google Map Geocode Library)
-2. You can also search places by using keywords such as 'pizza'  with the search bar.
+1. You are able to search many places via Google Map API service with the search bar provided.(via Google Map Geocode Library)
+2. This search has a fallback. When the result is not sure (partial search = true), it falls back on **Nearby Search**, and uses Google Map Places Libary.
 3. What you have searched(recent search) is remembered on the left side, top of the sidebar. (up to 10 search results)
 	- You can click the recent search results, and it will automatically find it again
 
-#### "Filter Recent Search" : Filter the searched results 
+#### "Nearby Place Search" : Search places nearby
+1. You can search nearby places by using this option of the search. For example, searching for pizza places nearby.
+
+#### "Filter Recent Searches" : Filter the searched results 
 1. You can filter the recent search results by using **Filter Recent Search**
 2. It filters among the 10 recent search results and show them.
 

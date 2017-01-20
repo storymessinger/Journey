@@ -156,23 +156,35 @@ var ViewModel = function(startRouteData, startPositionData) {
 
 	        geocoder.geocode(input, function(results, status) {
 	            if (status == google.maps.GeocoderStatus.OK) {
-	                // Center the map to the FIRST result
-	                map.setCenter(results[0].geometry.location);
-	                // For every result found, markers are place on top
+                    // Always search in Places library when select option is Nearby Search
+                    if($('#searchFilter').val() === "nearby"){
+    					self.getAddressDetails(address);
+                        map.setZoom(15);
+    	            }
+                    // Search with geocode library
+                    else if(results[0].partial_match !== true){
+    	                // Center the map to the FIRST result
+    	                map.setCenter(results[0].geometry.location);
+    	                // For every result found, markers are place on top
 
-	                // Make the found places blank
-	                results.forEach(function(result) {
-	                    var location = result.geometry.location;
-	                    var title = result.address_components[0].short_name;
-	                    markMarkers(location, title, infowindow, 0);
-	                    // push the result in
-	                    self.getGeocodeDetails(result);
-	                });
-	                map.setZoom(15);
-	            } else {
-                    // push the result in
-					self.getAddressDetails(address);
-	            }
+    	                // Make the found places blank
+    	                results.forEach(function(result) {
+    	                    var location = result.geometry.location;
+    	                    var title = result.address_components[0].short_name;
+    	                    markMarkers(location, title, infowindow, 0);
+    	                    // push the result in
+    	                    self.getGeocodeDetails(result);
+    	                });
+    	                map.setZoom(15);
+    	            }
+                    // fallback
+                    else {
+    					self.getAddressDetails(address);
+    	                map.setZoom(15);
+                    }
+                } else {
+                    alert('error in Google Map Search: ' + status);
+                }
 	        });
 	    }
 	};
@@ -197,7 +209,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 		        }
     			// to remember
     			self.found.unshift(place);
-                console.log(self.found());
     			// remove extras
     			if (self.found().length > 10) {
     				var sliced = self.found().slice(0,9);
