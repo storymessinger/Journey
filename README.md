@@ -12,17 +12,20 @@ This could be used ...
 
 #### "World Search" : Search address/places around the world
 1. You are able to search many places via Google Map API service with the search bar provided.(via Google Map Geocode Library)
-![img01](https://github.com/storymessinger/Journey/blob/master/README_img/worldSearch_img_01.PNG)
+![worldSearch](https://github.com/storymessinger/Journey/blob/master/README_img/worldSearch_img_01.PNG)
 2. This search has a fallback. When the result is not sure (partial search = true), it falls back on **Nearby Search**, and uses Google Map Places Libary.
 3. What you have searched(recent search) is remembered on the left side, top of the sidebar. (up to 10 search results)
 	- You can click the recent search results, and it will automatically find it again
+![worldSearch](https://github.com/storymessinger/Journey/blob/master/README_img/worldSearch_img_02.PNG)
 
 #### "Nearby Place Search" : Search places nearby
 1. You can search nearby places by using this option of the search. For example, searching for pizza places nearby.
+![nearbySearch](https://github.com/storymessinger/Journey/blob/master/README_img/nearbySearch_img_01.PNG)
 
 #### "Filter Recent Searches" : Filter the searched results 
 1. You can filter the recent search results by using **Filter Recent Search**
 2. It filters among the 10 recent search results and show them.
+![filterSearch](https://github.com/storymessinger/Journey/blob/master/README_img/filterSearch_img_01.PNG)
 
 #### 'Routes' : Editing routes
 1. You can select a route and add waypoints in the route by following steps
@@ -36,6 +39,7 @@ This could be used ...
 #### "Wiki results" : finding information about the place in the wiki
 1. With every search, you can see the information about the place through mediaWiki API.
 2. The information is shown on the right, bottom side.
+![wiki info](https://github.com/storymessinger/Journey/blob/master/README_img/wikiInfo_img_01.PNG)
 
 
 ## Criteria (udacity)
