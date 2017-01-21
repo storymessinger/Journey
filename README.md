@@ -10,13 +10,19 @@ This could be used ...
 
 ## How to use the application
 
+#### "(sidebar) Place List-view
+1. What you have searched(recent search) is remembered on the left side, top of the sidebar. (up to 10 search results)
+	- You can click the recent search results, and it will automatically find it again
+	- (bug fix) it now does not add additonal markers 
+
+#### "(sidebar) Easy List Filter" : Filter
+1. You can filter the place lists by using this easy-Filter. This is an 'shortcut' feature for the "Filter Recent Search" feature below.
+2. Now, three easy-filter is available; University, restaurant and subway station.
+
 #### "World Search" : Search address/places around the world
 1. You are able to search many places via Google Map API service with the search bar provided.(via Google Map Geocode Library)
 ![worldSearch](https://github.com/storymessinger/Journey/blob/master/README_img/worldSearch_img_01.PNG)
 2. This search has a fallback. When the result is not sure (partial search = true), it falls back on **Nearby Search**, and uses Google Map Places Libary.
-3. What you have searched(recent search) is remembered on the left side, top of the sidebar. (up to 10 search results)
-	- You can click the recent search results, and it will automatically find it again
-![worldSearch](https://github.com/storymessinger/Journey/blob/master/README_img/worldSearch_img_02.PNG)
 
 #### "Nearby Place Search" : Search places nearby
 1. You can search nearby places by using this option of the search. For example, searching for pizza places nearby.
