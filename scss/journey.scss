@@ -93,14 +93,14 @@ body {
             flex-grow:1;
             display: flex;
             .search-bar {
-                z-index: 1001;
+                z-index: 999;
                 position: absolute;
 
                 display: flex;
                 flex-flow: column;
             }
             .wikiResult {
-                z-index: 1000;
+                z-index: 998;
                 position: absolute;
                 bottom : 1rem;
                 right: 1rem;
@@ -413,7 +413,7 @@ section {
     #sidebar_btn, #content_btn {
         opacity: 1;
         position: absolute;
-        z-index: 1000;
+        z-index: 1001;
     }
     .unfolded {
         left: 0rem;
