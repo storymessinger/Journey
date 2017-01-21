@@ -17,7 +17,8 @@ This could be used ...
 
 #### "(sidebar) Easy List Filter" : Filter
 1. You can filter the place lists by using this easy-Filter. This is an 'shortcut' feature for the "Filter Recent Search" feature below.
-2. Now, three easy-filter is available; University, restaurant and subway station.
+2. Now, three easy-filter is available; University, restaurant and subway station)
+![easy Filter](https://github.com/storymessinger/Journey/blob/master/README_img/EasyFilter_img_01.PNG)
 
 #### "World Search" : Search address/places around the world
 1. You are able to search many places via Google Map API service with the search bar provided.(via Google Map Geocode Library)
