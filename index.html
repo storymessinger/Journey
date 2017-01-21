@@ -15,10 +15,17 @@
     <div class="wrapper">
         <sidebar class="sidebar">
             <button data-bind="click: sidebarFold" type="button" id="sidebar_btn">Sidebar</button>
-            <p>Recent 10 Places:</p>
+            <p>Place List-view (recents):</p>
             <ul class="foundBox" data-bind="foreach: found">
-                    <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.place_id), text: $parent.getFound($data)"></li>
+                    <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.place_id, true, $data.name), text: $parent.getFound($data)"></li>
             </ul>
+
+            <p>Easy List Filter</p>
+            <div class="easyFilter">
+                <button data-bind="click: easyFilter" value="university">university</button>
+                <button data-bind="click: easyFilter" value="restaurant">restaurant</button>
+                <button data-bind="click: easyFilter" value="subway_station">subway station</button>
+            </div>
 
             <form data-bind="submit: addRoute" id="addRoute">
                 <p>Your Routes:</p>
@@ -44,7 +51,7 @@
                     <input data-bind="enterKey: enterKeyPress" id="searchInput" type="text" placeholder="Enter your favorite area!" >
                 </div>
                 <form class="zoom-search">
-                    <select id="searchFilter">
+                    <select size=3 id="searchFilter">
                         <option value="world">World Search</option>
                         <option value="nearby">Nearby Place Search</option>
                         <option value="recent">Filter Recent Searches</option>

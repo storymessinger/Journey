@@ -1,5 +1,6 @@
 // Create a new blank array for all the listing markers.
 var markers = [];
+var list_view_marker = [];
 
 var init_routes = [
     {
@@ -50,6 +51,40 @@ var init_places = [
     {
     address_components: [
         {
+            long_name: "9",
+            short_name: "9"
+        }
+    ],
+    formatted_address: "9 Marshall St, Soho, London W1F 7ER, UK",
+    place_id : "ChIJrdWi49QEdkgRHfSGuZRCJUM",
+    name: "Masala Zone Soho",
+    geometry : {
+        location: {
+            lat: 51.514102,
+            lng: -0.137900
+        }
+    },
+    types: ["bar","restaurant", "food"]
+},  {
+    address_components: [
+        {
+            long_name: "73",
+            short_name: "73"
+        }
+    ],
+    formatted_address: "73 Strand, London WC2R 0DE, UK",
+    place_id : "ChIJmxZH4csEdkgR3Og1qwKoO0I",
+    name: "Zizzi",
+    geometry : {
+        location: {
+            lat: 51.514530,
+            lng: -0.122665
+        }
+    },
+    types: ["meal_takeaway", "restaurant", "food"]
+},  {
+    address_components: [
+        {
             long_name: "London",
             short_name: "London"
         }
@@ -67,20 +102,20 @@ var init_places = [
 }, {
     address_components: [
         {
-            long_name: "Westminster",
-            short_name: "Westminster"
+            long_name: "Trafalgar Square",
+            short_name: "Trafalgar Square"
         }
     ],
-    formatted_address: "Westminster, London, UK",
-    place_id : "ChIJVbSVrt0EdkgRQH_FO4ZkHc0",
-    name: "Westminster",
+    formatted_address: "Trafalgar Square, London WC2N 5DR, UK",
+    place_id : "ChIJhy-eTs4EdkgRjvVoQxhTSYg",
+    name: "Charing Cross Underground Station",
     geometry : {
         location: {
-            lat: 51.499531,
-            lng: -0.123856
+            lat: 51.508679,
+            lng: -0.127428
         }
     },
-    types: ["neighborhood","political"]
+    types: ["subway_station","transit_station","point_of_interest","establishment"]
 }, {
     address_components: [
         {

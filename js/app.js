@@ -87,25 +87,56 @@ var ViewModel = function(startRouteData, startPositionData) {
 		$(target).val('');
     };
 
+    this.easyFilter = function(data, event){
+		var $target = $(event.target);
+        var easyFilterPlace = self.found().filter(function(place){
+            if (place.types.includes($target.val())) {
+                return true;
+            }
+        });
+        self.hideMarkers();
+        markers = [];
+        self.found(easyFilterPlace);
+        boundMarkers(easyFilterPlace, false);
+    };
+
+
 	// This function takes the input value in the find nearby area text input
 	// locates it, and then zooms into that area.
 	// It also fires <getGeocodeDetails> function or <getAddressDetails>
 	// based on the search input
-	this.getSearch = function(infowindow, place_id) {
+	this.getSearch = function(infowindow, place_id, isButton, place_name) {
 
 		// reset all the markers
 	    self.hideMarkers();
 		// reset search-results
 		self.searched.removeAll();
 
+
 		var geocoder = new google.maps.Geocoder();
 	    var address = document.getElementById('searchInput').value;
+
+
+
 
 	    // Make sure the address and place_id isn't both blank.
         // #1
 	    if (!address && !place_id){
 	        window.alert("You must enter an area, or address.");
         // #2
+        } else if (isButton === true) {
+            var searchButton= self.found().filter(function(item){
+                return item.place_id === place_id;
+            });
+            if (searchButton){
+                self.hideMarkers();
+                boundMarkers(searchButton, true);
+                self.loadPlaceInfo(place_name);
+
+            } else {
+                alert('error in recent-search system');
+            }
+        // #3
         } else if ($('#searchFilter').val() === "recent") {
             var searchRecent = self.found().filter(function(place){
                 if (place.name.toLowerCase() === address.toLowerCase()){
@@ -124,18 +155,20 @@ var ViewModel = function(startRouteData, startPositionData) {
             if (searchRecent[0] === undefined){
                 alert('no search results found among recent findings');
             } else {
-                // self.hideMarkers();
-                boundMarkers(searchRecent);
+                self.hideMarkers();
+                markers = [];
+                self.found(searchRecent);
+                boundMarkers(searchRecent, false);
             }
         }
-        // #3
+        // #4
         // Always search in Places library when select option is Nearby Search
         else if($('#searchFilter').val() === "nearby"){
 			self.getAddressDetails(address);
             map.setZoom(15);
         }
-        // #4
-         else {
+        // #5
+        else {
 	        // Geocode the address/area entered to get the center. Then, center the map
 	        // on it and zoom in
             var input;
@@ -163,9 +196,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 
     	                // Make the found places blank
     	                results.forEach(function(result) {
-    	                    var location = result.geometry.location;
-    	                    var title = result.address_components[0].short_name;
-    	                    markMarkers(location, title, infowindow, 0);
     	                    // push the result in
     	                    self.getGeocodeDetails(result);
     	                });
@@ -187,12 +217,19 @@ var ViewModel = function(startRouteData, startPositionData) {
 	// this function gets fired when result was made by Geocode
 	this.getGeocodeDetails = function(result) {
 
+
 		if(result.place_id){
 		    var service = new google.maps.places.PlacesService(map);
 		    service.getDetails({
 		        placeId: result.place_id,
 		    }, function(place, status) {
+
+                var isDuplicate = self.found().find(function(item){
+                    return item.name === place.name;
+                });
+
 		        if (status === google.maps.places.PlacesServiceStatus.OK) {
+					markMarkers(place.geometry.location, place.name, largeInfowindow, Boolean(isDuplicate));
 					makeHTML(place);
 	                self.searched.push({
 						// resultHTML : resultHTML,
@@ -201,16 +238,19 @@ var ViewModel = function(startRouteData, startPositionData) {
 					});
                     self.loadPlaceInfo(place.name);
 		        }
-    			// to remember
-    			self.found.unshift(place);
-    			// remove extras
-    			if (self.found().length > 10) {
-    				var sliced = self.found().slice(0,9);
-    				self.found.removeAll();
-    				for (i=0; i<sliced.length; i++){
-    					self.found.push(sliced[i]);
-    				}
-    			}
+                if(isDuplicate === undefined){
+        			// to remember
+        			self.found.unshift(place);
+        			// remove extras
+        			if (self.found().length > 10) {
+        				var sliced = self.found().slice(0,9);
+        				self.found.removeAll();
+        				for (i=0; i<sliced.length; i++){
+        					self.found.push(sliced[i]);
+        				}
+        			}
+                    console.log(self.found());
+                }
 		    });
 		} else {
             window.alert('We could not find that location - try entering a more' +
@@ -251,6 +291,9 @@ var ViewModel = function(startRouteData, startPositionData) {
             bounds: bounds
         }, function(results, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
+                var isDuplicate = self.found().find(function(item){
+                    return item.name === results[0].name;
+                });
 				var count =0;
 				for(i=0; i<results.length; i++){
                     var place =results[i];
@@ -261,7 +304,7 @@ var ViewModel = function(startRouteData, startPositionData) {
                     }
 
 					if(count<3) {
-						markMarkers(place.geometry.location, place.name, largeInfowindow, 0);
+						markMarkers(place.geometry.location, place.name, largeInfowindow, Boolean(isDuplicate));
 						makeHTML_place(place);
     	                self.searched.push({
     						// resultHTML : resultHTML,
@@ -272,15 +315,18 @@ var ViewModel = function(startRouteData, startPositionData) {
 						count++;
 					}
 				}
-				//Remember it in the founds-sidebar
-				self.found.unshift(results[0]);
-				if (self.found().length > 10) {
-					var sliced = self.found().slice(0,9);
-					self.found.removeAll();
-					for (i=0; i<sliced.length; i++){
-						self.found.push(sliced[i]);
-					}
-				}
+
+                if(isDuplicate === undefined){
+    				//Remember it in the founds-sidebar
+    				self.found.unshift(results[0]);
+    				if (self.found().length > 10) {
+    					var sliced = self.found().slice(0,9);
+    					self.found.removeAll();
+    					for (i=0; i<sliced.length; i++){
+    						self.found.push(sliced[i]);
+    					}
+    				}
+                }
             } else {
                 window.alert('We could not find that location - try entering a more' +
                 ' specific place.');
@@ -364,7 +410,6 @@ var ViewModel = function(startRouteData, startPositionData) {
 	this.addingPlaceToRoutes = function(location) {
 		// Users must have selected a route in order to
 		// add a place 'to' a route
-        console.log(location);
 		if (self.currentRouteIndex() === undefined) {
 			alert('please select a route');
 		} else {
@@ -460,8 +505,22 @@ var ViewModel = function(startRouteData, startPositionData) {
 	    for (var i = 0; i < markers.length; i++) {
 	        markers[i].setMap(null);
 	    }
+	    for (var i = 0; i < list_view_marker.length; i++) {
+	        list_view_marker[i].setMap(null);
+	    }
 	};
+    // This function will loop through the markers array and display them all.
+    this.showListings = function() {
 
+
+        var show_bounding = new google.maps.LatLngBounds();
+        // Extend the boundaries of the map for each marker and display the marker
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(map);
+            show_bounding.extend(markers[i].position);
+        }
+        map.fitBounds(bounds);
+    }
 
     this.wikiResult = ko.observable();
     // this function is for mediawiki AJAX request
@@ -537,7 +596,7 @@ function initMap() {
 
 
 ////// GLOBAL varaibles and functions
-function boundMarkers(findLocation){
+function boundMarkers(findLocation, isDuplicate){
     // This makes bounding easier
     var bounds = new google.maps.LatLngBounds();
     // This autocomplete is for use in the geocoder entry box.
@@ -554,7 +613,7 @@ function boundMarkers(findLocation){
         //Extend the boundaries of the map
         bounds.extend(place.geometry.location);
         //** Create a marker per location, and put into markers array.
-        markMarkers(position, title, largeInfowindow);
+        markMarkers(position, title, largeInfowindow, isDuplicate);
     });
     // findLocation.forEach(function(item){
     //     bounds.extend(item.geometry.location);
@@ -565,7 +624,9 @@ function boundMarkers(findLocation){
 }
 
 // marking the Markers with added functionalty of Event-trigger
-function markMarkers(location, title, Infowindow) {
+function markMarkers(location, title, Infowindow, isDuplicate) {
+
+
     var thisInfowindow = Infowindow;
 
     var marker = new google.maps.Marker({
@@ -574,8 +635,12 @@ function markMarkers(location, title, Infowindow) {
         title: title,
         animation: google.maps.Animation.DROP
     });
-    // Push the marker to our array of markers.
-    markers.push(marker);
+
+    if (isDuplicate !== true){
+        markers.push(marker);
+    } else {
+        list_view_marker.push(marker);
+    }
     // Create an onclick event to open an infowindow at each marker.
     marker.addListener('click', function() {
         var self=this;
@@ -604,7 +669,6 @@ function populateInfoWindow(marker, infowindow) {
         var getStreetView =function(data, status) {
             if (status == google.maps.StreetViewStatus.OK) {
                 var nearStreetViewLocation = data.location.latLng;
-                console.dir(nearStreetViewLocation);
                 var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
                 infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
                 var panoramaOptions = {
