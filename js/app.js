@@ -76,7 +76,6 @@ var ViewModel = function(startRouteData, startPositionData) {
     _.each(startPositionData, function(place) {
         self.found.push(place);
     });
-
 	// enterKeyPress event
 	this.enterKeyPress = function(data, event) {
 		// initiate getSearch
@@ -249,7 +248,6 @@ var ViewModel = function(startRouteData, startPositionData) {
         					self.found.push(sliced[i]);
         				}
         			}
-                    console.log(self.found());
                 }
 		    });
 		} else {
