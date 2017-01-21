@@ -97,10 +97,14 @@ var ViewModel = function(startRouteData, startPositionData) {
                 return true;
             }
         });
-        self.hideMarkers();
-        markers = [];
-        self.found(easyFilterPlace);
-        boundMarkers(easyFilterPlace, false);
+        if(easyFilterPlace.length === 0){
+            alert('no filter results among the recent Place list');
+        } else {
+            self.hideMarkers();
+            markers = [];
+            self.found(easyFilterPlace);
+            boundMarkers(easyFilterPlace, false);
+        }
     };
 
 

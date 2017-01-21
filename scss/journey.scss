@@ -65,6 +65,7 @@ html {
 }
 
 // this is for the holyGrail layout(flex)
+// and the basic frame
 // https://philipwalton.github.io/solved-by-flexbox/demos/holy-grail/
 body {
     display: flex;
@@ -116,6 +117,7 @@ body {
     }
 }
 
+// infowindow style for google map api
 #pano {
     width: 280px;
     height: 280px;
@@ -129,7 +131,6 @@ body {
     color: $grey-light;
     opacity: 0;
     @include card(1);
-
 }
 #sidebar_btn:hover, #content_btn:hover {
 	background-color: #8B0000;
@@ -140,6 +141,7 @@ body {
 #sidebar_btn:active, #content_btn:active {
     @include card(0);
 }
+
 // sidebar design
 .sidebar {
     background-color: $primary-color;
@@ -288,8 +290,27 @@ body {
         	top:1px;
         }
     }
+    .easyFilter {
+
+        button {
+            color: $grey-dark;
+            background-color: $secondary-color;
+        	border-radius:8px;
+            @include card(1);
+            border: 0;
+            margin-bottom: 1rem;
+        }
+        button:hover {
+            background-color: $secondary-color-dark;
+        }
+        button:active {
+            position: relative;
+        	top:1px;
+        }
+    }
 }
 
+// content bar design
 section {
     .wikiResult {
         background-color: $secondary-color;
@@ -391,6 +412,7 @@ section {
     }
 }
 
+// media under 1199
 @media (max-width: 1199px) {
     .search-bar, .wikiResult {
         transition: all 0.3s ease;
@@ -420,6 +442,7 @@ section {
     }
 }
 
+// media under 500
 @media (max-width: 500px) {
 
     .zoom-search {
