@@ -46,6 +46,7 @@
         </sidebar>
 
         <section class="content">
+            <button data-bind="click: searchbarFold" type="button" id="content_btn">Search Bar</button>
             <div class="search-bar">
                 <div class="zoom-search">
                     <input data-bind="enterKey: enterKeyPress" id="searchInput" type="text" placeholder="Enter your favorite area!" >
@@ -67,8 +68,7 @@
                     </div>
                 </ul>
             </div>
-            <div class="wikiResult" data-bind="html: wikiResult">
-            </div>
+            <div class="wikiResult" data-bind="html: wikiResult"></div>
             <div class="google-map" id="map"></div>
         </section>
     </div>

@@ -84,14 +84,17 @@ body {
             top: 1rem;
             left: 2rem;
         }
+        #content_btn{
+            position: fixed;
+            top: 1rem;
+            right: 2rem;
+        }
         section {
             flex-grow:1;
             display: flex;
             .search-bar {
                 z-index: 1000;
                 position: absolute;
-                top: 1rem;
-                right: 1rem;
 
                 display: flex;
                 flex-flow: column;
@@ -118,6 +121,25 @@ body {
     height: 280px;
 }
 
+#sidebar_btn, #content_btn {
+    background-color: $secondary-color-dark;
+    padding: 0.4rem 1rem 0.4rem 1rem;
+	border-radius:8px;
+    border: 0;
+    color: $grey-light;
+    opacity: 0;
+    @include card(1);
+
+}
+#sidebar_btn:hover, #content_btn:hover {
+	background-color: #8B0000;
+}
+#sidebar_btn:focus, #content_btn:focus {
+    outline: none;
+}
+#sidebar_btn:active, #content_btn:active {
+    @include card(0);
+}
 // sidebar design
 .sidebar {
     background-color: $primary-color;
@@ -132,25 +154,6 @@ body {
         padding-right: 2rem;
     }
 
-    #sidebar_btn {
-        background-color: $secondary-color-dark;
-        padding: 0.4rem 1rem 0.4rem 1rem;
-    	border-radius:8px;
-        border: 0;
-        color: $grey-light;
-        opacity: 0;
-        @include card(1);
-
-    }
-    #sidebar_btn:hover {
-    	background-color: #8B0000;
-    }
-    #sidebar_btn:focus {
-        outline: none;
-    }
-    #sidebar_btn:active {
-        @include card(0);
-    }
     ul {
         list-style: none;
         padding: 0;
@@ -288,6 +291,13 @@ body {
 }
 
 @media (max-width: 1199px) {
+    .search-bar, .wikiResult {
+        transition: all 0.3s ease;
+        right: -30rem !important;
+    }
+    .search-unfolded {
+        right: 1rem !important;
+    }
     .sidebar {
         display: block;
         position: fixed;
@@ -298,12 +308,11 @@ body {
         z-index: 1001;
 
         transition: all 0.3s ease;
-        #sidebar_btn {
-            opacity: 1;
-            position: absolute;
-            z-index: 1000;
-
-        }
+    }
+    #sidebar_btn, #content_btn {
+        opacity: 1;
+        position: absolute;
+        z-index: 1000;
     }
     .unfolded {
         left: 0rem;
@@ -352,6 +361,8 @@ section {
     }
     .search-bar {
         margin-top: 2.8rem;
+        top: 1rem;
+        right: 1rem;
         // zoom search design
         .zoom-search {
             margin-top: 0.5rem;

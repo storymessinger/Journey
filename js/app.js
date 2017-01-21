@@ -58,12 +58,16 @@ var ViewModel = function(startRouteData, startPositionData) {
         self.largeInfowindow();
     };
 
-    // bind the event to the sidebar_btn
     this.sidebarFold = function(data, event) {
         var $sidebar = $('sidebar');
         $sidebar.toggleClass('unfolded');
-        //-- if youre to target the custom element, you have to sue event.target
-        $(event.target).toggleClass('move_right');
+    };
+
+    this.searchbarFold= function(data, event) {
+        var $wiki = $('.wikiResult');
+        var $searchbar = $('.search-bar');
+        $wiki.toggleClass('search-unfolded');
+        $searchbar.toggleClass('search-unfolded');
     };
 
 	////////
@@ -699,10 +703,3 @@ $('.adding-route').on('keyup keypress', function(e) {
     return false;
   }
 });
-
-// $('#sidebar_btn').on('click', function(){
-//     var $sidebar = $('sidebar');
-//     $sidebar.toggleClass('unfolded');
-//     //-- if youre to target the custom element, you have to sue event.target
-//     $(this).toggleClass('move_right');
-// });
