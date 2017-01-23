@@ -20,12 +20,21 @@
                     <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.place_id, true, $data.name), text: $parent.getFound($data)"></li>
             </ul>
 
+            <hr>
+
             <p>Easy List Filter</p>
             <div class="easyFilter">
                 <button data-bind="click: easyFilter" value="university">university</button>
                 <button data-bind="click: easyFilter" value="restaurant">restaurant</button>
                 <button data-bind="click: easyFilter" value="subway_station">subway station</button>
             </div>
+
+            <p>Filtered result</p>
+            <ul class="foundBox" data-bind="foreach: filterFound">
+                    <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.place_id, true, $data.name), text: $parent.getFound($data)"></li>
+            </ul>
+
+            <hr>
 
             <form data-bind="submit: addRoute" id="addRoute">
                 <p>Example Routes:</p>

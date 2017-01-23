@@ -75,21 +75,14 @@ var ViewModel = function(startRouteData, startPositionData) {
 	// when you search for a place, it is remembered here
     this.searched= ko.observableArray();
 
-	// This stores the recent results of search. (up to 5)
+	// This stores the recent results of search.
 	this.found = ko.observableArray([]);
-
     startPositionData.forEach(function(place){
         self.found.push(place);
     });
-	// enterKeyPress event
-	this.enterKeyPress = function(data, event) {
-		// initiate getSearch
-		self.getSearch(largeInfowindow);
 
-		// refresh the search input after pressing enter
-		var target = event.target;
-		$(target).val('');
-    };
+	// This stores the filted results of found
+	this.filterFound = ko.observableArray([]);
 
     this.easyFilter = function(data, event){
 		var $target = $(event.target);
@@ -102,10 +95,20 @@ var ViewModel = function(startRouteData, startPositionData) {
             alert('no filter results among the recent Place list');
         } else {
             self.hideMarkers();
-            markers = [];
-            self.found(easyFilterPlace);
-            boundMarkers(easyFilterPlace, false);
+            self.filterFound(easyFilterPlace);
+            boundMarkers(easyFilterPlace, true);
         }
+    };
+
+
+	// enterKeyPress event
+	this.enterKeyPress = function(data, event) {
+		// initiate getSearch
+		self.getSearch(largeInfowindow);
+
+		// refresh the search input after pressing enter
+		var target = event.target;
+		$(target).val('');
     };
 
 
@@ -557,6 +560,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 
                     //
                     for (i=0; i<resultNum; i++){
+                        wikiHTML += '<h2> This is WikiMedia Results </h2>';
                         wikiHTML += '<li class="placeName">'+ i +'. '+ wikiResult[1][i] + '</li>';
                         wikiHTML += '<li class="placeDesc">' + wikiResult[2][i] + '</li>';
                     }

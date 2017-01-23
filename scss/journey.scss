@@ -64,6 +64,11 @@ html {
     font-family: 'Lemonada', 'Jeju Gothic', cursive;
 }
 
+hr {
+    margin: 1.5rem 0 1.5rem 0;
+    border: 0.5px solid white;
+}
+
 // this is for the holyGrail layout(flex)
 // and the basic frame
 // https://philipwalton.github.io/solved-by-flexbox/demos/holy-grail/
@@ -332,7 +337,7 @@ section {
             list-style: none;
             padding: 0;
             .placeName {
-                font-size: 1.4rem;
+                font-size: 1.2rem;
                 margin-bottom: 0.5rem;
             }
             .placeDesc {
