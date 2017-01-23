@@ -69,16 +69,21 @@ html {
 // https://philipwalton.github.io/solved-by-flexbox/demos/holy-grail/
 body {
     display: flex;
-    min-height: 100vh;
     flex-direction: column;
     position: relative;
+    min-height: 100vh;
 
     .wrapper {
         display: flex;
         flex: 1;
         .sidebar {
-            padding-top: 3rem;
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+            -webkit-overflow-y: scroll;
+            -webkit-overflow-x: hidden;
             flex: 0 0 16rem;
+            height: 100vh;
         }
         #sidebar_btn {
             position: fixed;
@@ -93,6 +98,7 @@ body {
         section {
             flex-grow:1;
             display: flex;
+            position: relative;
             .search-bar {
                 z-index: 999;
                 position: absolute;
@@ -104,7 +110,7 @@ body {
                 z-index: 998;
                 position: absolute;
                 bottom : 1rem;
-                right: 1rem;
+                right : 1rem;
 
                 display: flex;
                 flex-flow: column;
@@ -129,7 +135,6 @@ body {
 	border-radius:8px;
     border: 0;
     color: $grey-light;
-    opacity: 0;
     @include card(1);
 }
 #sidebar_btn:hover, #content_btn:hover {
@@ -149,6 +154,9 @@ body {
     color: $grey-light;
     padding-left: 1rem;
     @include card(3);
+    .sidebar-top {
+        padding-top: 3rem;
+    }
 
     .easyFilter {
         display: flex;
@@ -179,9 +187,12 @@ body {
             border-radius: 0.5rem;
             cursor: pointer;
 
-            max-width: 50%;
-            max-height: 2rem;
-            overflow-x: hidden;
+            max-width: 100px;
+            height: 0.8rem;
+            overflow:hidden;
+
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
         .foundPlace:hover {
             background-color: $secondary-color-dark;
@@ -197,8 +208,8 @@ body {
             .item-holder {
                 position: relative;
                 @include card(1);
-                padding: 1rem 1rem 1rem 1rem;
-                margin: 1rem 1rem 1rem 0rem;
+                padding: 0.5rem 0.5rem 0.5rem 1rem;
+                margin: 0.8rem 0.8rem 0.8rem 0;
                 border-radius: 0.5rem;
                 cursor: pointer;
                 background-color: $white;
@@ -223,10 +234,10 @@ body {
                 }
 
                 button {
-                    width: 1.6rem;
-                    height: 1.6rem;
-                    right:1.2rem;
-                    bottom: 0.7rem;
+                    width: 1rem;
+                    height: 1rem;
+                    right:1rem;
+                    bottom: 0.5rem;
                     position: absolute;
                     background: url(../public/img/clear.png);
                     background-size: cover;
@@ -248,48 +259,49 @@ body {
 
         }
     }
-    .adding-route {
-        background-color: $secondary-color;
-        padding: 0.5rem 1rem 0.5rem 1rem;
-        border-radius: 0.5rem;
-        margin-right: 1rem;
-        display: flex;
-        input {
-            border: none;
-            background: transparent;
-            color: $primary-color;
-            margin-right: 1rem;
-            border-bottom: 1px $primary-color solid;
-        }
-        input:focus, button:focus {
-            outline: none;
-        }
-        button {
-            // border: none;
-            background-color: $primary-color-dark;
-            color: $grey-dark;
-            padding: 0.4rem;
-            font-size: 0.8rem;
 
-        	border-radius:8px;
-        	border:1px solid #18ab29;
-
-        	display:inline-block;
-        	color:#ffffff;
-        	font-size:0.9rem;
-        	padding:8px 17px;
-
-        	text-decoration:none;
-        	// text-shadow:0px 1px 0px #57c246;
-        }
-        button:hover {
-        	background-color:$primary-color-dark;
-        }
-        button:active {
-        	position:relative;
-        	top:1px;
-        }
-    }
+    // .adding-route {
+    //     background-color: $secondary-color;
+    //     padding: 0.5rem 1rem 0.5rem 1rem;
+    //     border-radius: 0.5rem;
+    //     margin-right: 1rem;
+    //     display: flex;
+    //     input {
+    //         border: none;
+    //         background: transparent;
+    //         color: $primary-color;
+    //         margin-right: 1rem;
+    //         border-bottom: 1px $primary-color solid;
+    //     }
+    //     input:focus, button:focus {
+    //         outline: none;
+    //     }
+    //     button {
+    //         // border: none;
+    //         background-color: $primary-color-dark;
+    //         color: $grey-dark;
+    //         padding: 0.4rem;
+    //         font-size: 0.8rem;
+    //
+    //     	border-radius:8px;
+    //     	border:1px solid #18ab29;
+    //
+    //     	display:inline-block;
+    //     	color:#ffffff;
+    //     	font-size:0.9rem;
+    //     	padding:8px 17px;
+    //
+    //     	text-decoration:none;
+    //     	// text-shadow:0px 1px 0px #57c246;
+    //     }
+    //     button:hover {
+    //     	background-color:$primary-color-dark;
+    //     }
+    //     button:active {
+    //     	position:relative;
+    //     	top:1px;
+    //     }
+    // }
     .easyFilter {
 
         button {
@@ -313,8 +325,8 @@ body {
 // content bar design
 section {
     .wikiResult {
+        margin:auto;
         background-color: $secondary-color;
-        padding: 0.5rem 1rem 0.5rem 1rem;
         border-radius: 0.5rem;
         width: 400px;
         //material shadow
@@ -322,10 +334,11 @@ section {
 
         max-height: 300px;
         overflow-y: scroll;
+        -webkit-overflow-y: scroll;
         ul {
+            margin: 1.5rem 2rem 1.5rem 2rem;
             list-style: none;
             padding: 0;
-            margin: 1rem;
             .placeName {
                 font-size: 1.4rem;
                 margin-bottom: 0.5rem;
@@ -339,12 +352,11 @@ section {
 
     }
     .search-bar {
-        margin-top: 2.8rem;
+        margin-top: 3rem;
         top: 1rem;
         right: 1rem;
         // zoom search design
         .zoom-search {
-            margin-top: 0.5rem;
             background-color: $primary-color;
             padding: 0.5rem 1rem 0.5rem 1rem;
             border-radius: 0.5rem;
@@ -378,6 +390,9 @@ section {
             input:focus {
                 outline:none;
             }
+        }
+        .zoom-select {
+            margin-bottom: 0.5rem;
         }
         .search-ul {
             margin:0;
@@ -414,28 +429,33 @@ section {
 
 // media under 1199
 @media (max-width: 1199px) {
-    .search-bar, .wikiResult {
+    .search-bar {
         transition: all 0.3s ease;
         right: -30rem !important;
+    }
+    .wikiResult {
+        transition: all 0.3s ease;
+        right: -30rem !important;
+
     }
     .search-unfolded {
         right: 1rem !important;
     }
     .sidebar {
+
         display: block;
         position: fixed;
         height: 100vh;
         width: 18rem;
         // box-shadow:
         left:-18rem;
-        z-index: 1002;
+        z-index: 1001;
 
         transition: all 0.3s ease;
     }
     #sidebar_btn, #content_btn {
-        opacity: 1;
         position: absolute;
-        z-index: 1001;
+        z-index: 1002;
     }
     .unfolded {
         left: 0rem;
@@ -457,7 +477,6 @@ section {
     section {
         .wikiResult {
             max-width: 80vw;
-            margin: auto;
             max-height: 200px;
             ul {
                 .placeName {

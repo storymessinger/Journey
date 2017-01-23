@@ -15,7 +15,7 @@
     <div class="wrapper">
         <sidebar class="sidebar">
             <button data-bind="click: sidebarFold" type="button" id="sidebar_btn">Sidebar</button>
-            <p>Place List-view (recents):</p>
+            <p class="sidebar-top">Place List-view (recents):</p>
             <ul class="foundBox" data-bind="foreach: found">
                     <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.place_id, true, $data.name), text: $parent.getFound($data)"></li>
             </ul>
@@ -28,18 +28,18 @@
             </div>
 
             <form data-bind="submit: addRoute" id="addRoute">
-                <p>Your Routes:</p>
+                <p>Example Routes:</p>
                 <ul data-bind="foreach: routes">
                     <div class="item-holder" data-bind="click: $parent.displayRoute" >
                         <li class="route" data-bind="text: name"> </li>
                         <button data-bind="click: $parent.thisRouteDelete" type="image" src="public/img/clear.png"></button>
                     </div>
                 </ul>
-                <p>Add Routes:</p>
-                <div class="adding-route">
+                <!-- <p>Add Routes:</p> -->
+                <!-- <div class="adding-route">
                     <input data-bind='value: routeToAdd, valueUpdate: "afterkeydown"' />
                     <button type="submit" data-bind="enable: routeToAdd().length > 0">Add</button>
-                </div>
+                </div> -->
 
             </form>
 
@@ -48,23 +48,23 @@
         <section class="content">
             <button data-bind="click: searchbarFold" type="button" id="content_btn">Search Bar</button>
             <div class="search-bar">
-                <div class="zoom-search">
-                    <input data-bind="enterKey: enterKeyPress" id="searchInput" type="text" placeholder="Enter your favorite area!" >
-                </div>
-                <form class="zoom-search">
-                    <select size=3 id="searchFilter">
+                <form class="zoom-search zoom-select">
+                    <select id="searchFilter">
                         <option value="world">World Search</option>
                         <option value="nearby">Nearby Place Search</option>
                         <option value="recent">Filter Recent Searches</option>
                     </select>
                 </form>
+                <div class="zoom-search">
+                    <input data-bind="enterKey: enterKeyPress" id="searchInput" type="text" placeholder="Enter your favorite area!" >
+                </div>
                 <ul data-bind="foreach: searched" class="search-ul">
                     <div class="search-holder">
                         <li data-bind="html: resultHTML" class="search-result">
                         </li>
-                        <div class="btns">
+                        <!-- <div class="btns">
                             <button data-bind="click: $parent.addingPlaceToRoutes.bind($data, location)" style="background-color:#FFE781" class="route-add-buttons">Add to route</button>
-                        </div>
+                        </div> -->
                     </div>
                 </ul>
             </div>

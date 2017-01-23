@@ -413,38 +413,38 @@ var ViewModel = function(startRouteData, startPositionData) {
 	this.currentRouteIndex = ko.observable();
 
 	// function that adds searched places to the current selected route
-	this.addingPlaceToRoutes = function(location) {
-		// Users must have selected a route in order to
-		// add a place 'to' a route
-		if (self.currentRouteIndex() === undefined) {
-			alert('please select a route');
-		} else {
-			var pulled = self.routes().slice(self.currentRouteIndex(),self.currentRouteIndex()+1)[0];
-
-			if (pulled.route_info.origin === undefined){
-				pulled.route_info.origin = location;
-				self.routes.replace(self.routes()[self.currentRouteIndex()], pulled);
-
-			} else if (pulled.route_info.destination === undefined && pulled.route_info.origin !== location) {
-				pulled.route_info.destination = location;
-				self.routes.replace(self.routes()[self.currentRouteIndex()], pulled);
-
-			} else if (pulled.route_info.destination !== location && pulled.route_info.origin !== location){
-				var obj = {
-					location : location,
-					stopover : true
-				};
-				pulled.route_info.waypoints.push(obj);
-				self.routes.replace(self.routes()[self.currentRouteIndex()], pulled);
-			}
-
-			// refresh displayRoute
-			if (self.currentRouteIndex() === undefined){
-				var bool_routeSelect= false;
-			}
-			self.displayRoute(bool_routeSelect);
-		}
-	};
+	// this.addingPlaceToRoutes = function(location) {
+	// 	// Users must have selected a route in order to
+	// 	// add a place 'to' a route
+	// 	if (self.currentRouteIndex() === undefined) {
+	// 		alert('please select a route');
+	// 	} else {
+	// 		var pulled = self.routes().slice(self.currentRouteIndex(),self.currentRouteIndex()+1)[0];
+    //
+	// 		if (pulled.route_info.origin === undefined){
+	// 			pulled.route_info.origin = location;
+	// 			self.routes.replace(self.routes()[self.currentRouteIndex()], pulled);
+    //
+	// 		} else if (pulled.route_info.destination === undefined && pulled.route_info.origin !== location) {
+	// 			pulled.route_info.destination = location;
+	// 			self.routes.replace(self.routes()[self.currentRouteIndex()], pulled);
+    //
+	// 		} else if (pulled.route_info.destination !== location && pulled.route_info.origin !== location){
+	// 			var obj = {
+	// 				location : location,
+	// 				stopover : true
+	// 			};
+	// 			pulled.route_info.waypoints.push(obj);
+	// 			self.routes.replace(self.routes()[self.currentRouteIndex()], pulled);
+	// 		}
+    //
+	// 		// refresh displayRoute
+	// 		if (self.currentRouteIndex() === undefined){
+	// 			var bool_routeSelect= false;
+	// 		}
+	// 		self.displayRoute(bool_routeSelect);
+	// 	}
+	// };
 
     this.directionsService = new google.maps.DirectionsService;
     this.directionsDisplay = new google.maps.DirectionsRenderer;
@@ -700,10 +700,10 @@ function populateInfoWindow(marker, infowindow) {
 }
 
 // disable 'enter key' for adding-routes button
-$('.adding-route').on('keyup keypress', function(e) {
-  var keyCode = e.keyCode || e.which;
-  if (keyCode === 13) {
-    e.preventDefault();
-    return false;
-  }
-});
+// $('.adding-route').on('keyup keypress', function(e) {
+//   var keyCode = e.keyCode || e.which;
+//   if (keyCode === 13) {
+//     e.preventDefault();
+//     return false;
+//   }
+// });
