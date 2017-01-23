@@ -13,8 +13,8 @@
 
 <body>
     <div class="wrapper">
+        <button data-bind="click: sidebarFold" type="button" id="sidebar_btn">Sidebar</button>
         <sidebar class="sidebar">
-            <button data-bind="click: sidebarFold" type="button" id="sidebar_btn">Sidebar</button>
             <p class="sidebar-top">Place List-view (recents):</p>
             <ul class="foundBox" data-bind="foreach: found">
                     <li class="foundPlace" data-bind="click: $parent.getSearch.bind($data, $parent.largeInfowindow, $data.place_id, true, $data.name), text: $parent.getFound($data)"></li>
@@ -35,11 +35,11 @@
                         <button data-bind="click: $parent.thisRouteDelete" type="image" src="public/img/clear.png"></button>
                     </div>
                 </ul>
-                <!-- <p>Add Routes:</p> -->
-                <!-- <div class="adding-route">
+                <p>Add Routes:</p>
+                <div class="adding-route">
                     <input data-bind='value: routeToAdd, valueUpdate: "afterkeydown"' />
                     <button type="submit" data-bind="enable: routeToAdd().length > 0">Add</button>
-                </div> -->
+                </div>
 
             </form>
 
@@ -62,9 +62,9 @@
                     <div class="search-holder">
                         <li data-bind="html: resultHTML" class="search-result">
                         </li>
-                        <!-- <div class="btns">
+                        <div class="btns">
                             <button data-bind="click: $parent.addingPlaceToRoutes.bind($data, location)" style="background-color:#FFE781" class="route-add-buttons">Add to route</button>
-                        </div> -->
+                        </div>
                     </div>
                 </ul>
             </div>
@@ -74,7 +74,6 @@
     </div>
 
     <script src="js/lib/jquery.min.js"></script>
-    <script src="js/lib/underscore.js"></script>
     <script src="js/lib/knockout-3.4.1.js"></script>
     <!--  -->
     <script src="js/data.js"></script>
