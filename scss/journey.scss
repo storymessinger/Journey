@@ -101,6 +101,8 @@ body {
             flex-grow:1;
             display: flex;
             position: relative;
+            overflow-x:hidden;
+            -webkit-overflow-x:hidden;
             .search-bar {
                 z-index: 999;
                 position: absolute;
