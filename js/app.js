@@ -676,19 +676,11 @@ function loadPlaceInfo(search, cb) {
                 wikiHTML = '<ul><li>' + 'no results from wiki' + '</li></ul>';
 
             } else {
+                console.log(wikiResult);
                 wikiHTML = '<ul>';
-                // restrict the number of result to 1
-                if(wikiResult[1].length > 2){
-                    resultNum = 2;
-                } else {
-                    resultNum = wikiResult[1].length;
-                }
-                //
-                for (i=0; i<resultNum; i++){
-                    wikiHTML += "<br><li> mediawiki results </li>";
-                    wikiHTML += '<li class="placeName"><h3>'+ i +'. '+ wikiResult[1][i] + '</h3></li>';
-                    wikiHTML += '<li class="placeDesc">' + wikiResult[2][i] + '</li>';
-                }
+                wikiHTML += "<br><li> mediawiki results </li>";
+                wikiHTML += '<li class="placeName"><h3>'+  wikiResult[1][0] + '</h3></li>';
+                wikiHTML += '<li class="placeDesc">' + wikiResult[2][0] + '</li>';
                 wikiHTML += '</ul>';
             }
 

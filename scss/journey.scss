@@ -318,20 +318,18 @@ section {
         // max-width: 300px;
         // max-height: 300px;
         // overflow-y: scroll;
-        // ul {
-        //     margin: 1.5rem 2rem 1.5rem 2rem;
-        //     list-style: none;
-        //     padding: 0;
-        //     .placeName {
-        //         font-size: 1.2rem;
-        //         margin-bottom: 0.5rem;
-        //     }
-        //     .placeDesc {
-        //         font-size: 0.8rem;
-        //         margin-bottom: 0.8rem;
-        //         color: rgb(10,10,10);
-        //     }
-        // }
+        ul {
+            list-style: none;
+            padding: 0;
+            .placeName {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            .placeDesc {
+                font-size: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+        }
     }
     .search-bar {
         margin-top: 3rem;
