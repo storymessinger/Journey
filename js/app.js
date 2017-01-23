@@ -142,7 +142,7 @@ var ViewModel = function(startRouteData, startPositionData) {
             if (searchButton){
                 self.hideMarkers();
                 boundMarkers(searchButton, true);
-                self.loadPlaceInfo(place_name);
+                // self.loadPlaceInfo(place_name);
 
             } else {
                 alert('error in recent-search system');
@@ -247,7 +247,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 						resultHTML : self.resultGeocodeHTML(),
 						location : place.geometry.location
 					});
-                    self.loadPlaceInfo(place.name);
+                    // self.loadPlaceInfo(place.name);
 		        }
                 if(isDuplicate === undefined){
         			// to remember
@@ -310,7 +310,7 @@ var ViewModel = function(startRouteData, startPositionData) {
 
                     // only for the first result
                     if (i === 0){
-                        self.loadPlaceInfo(place.name);
+                        // self.loadPlaceInfo(place.name);
                     }
 
 					if(count<3) {
@@ -533,55 +533,7 @@ var ViewModel = function(startRouteData, startPositionData) {
     }
 
     this.wikiResult = ko.observable();
-    // this function is for mediawiki AJAX request
-    this.loadPlaceInfo = function(search, cb) {
 
-     $.ajax({
-         asnyc: true,
-         dataType: "jsonp",
-         type: "GET",
-         url: "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&format=json",
-         success: function(wikiResult, status) {
-                var wikiHTML;
-                var resultNum;
-
-                // if there is no results from wiki, send out this message
-                if(wikiResult[1].length === 0) {
-                    wikiHTML = '<ul><li>' + 'no results from wiki' + '</li></ul>';
-
-                } else {
-                    wikiHTML = '<ul>';
-                    // restrict the number of result to 0 to 3
-                    if(wikiResult[1].length > 2){
-                        resultNum = 2;
-                    } else {
-                        resultNum = wikiResult[1].length;
-                    }
-
-                    //
-                    for (i=0; i<resultNum; i++){
-                        wikiHTML += '<h2> This is WikiMedia Results </h2>';
-                        wikiHTML += '<li class="placeName">'+ i +'. '+ wikiResult[1][i] + '</li>';
-                        wikiHTML += '<li class="placeDesc">' + wikiResult[2][i] + '</li>';
-                    }
-                    wikiHTML += '</ul>';
-                }
-
-                self.wikiResult(wikiHTML);
-
-             if (cb) {
-                 cb();
-             }
-         },
-         error: function(result, status, err) {
-             alert("error with connection from mediawiki: " + status);
-             //run only the callback without attempting to parse result due to error
-             if (cb) {
-                 cb();
-             }
-         }
-     });
-    };
 };
 
 // share 'map' as a Global variable
@@ -681,15 +633,18 @@ function populateInfoWindow(marker, infowindow) {
             if (status == google.maps.StreetViewStatus.OK) {
                 var nearStreetViewLocation = data.location.latLng;
                 var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
-                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
-                var panoramaOptions = {
-                    position: nearStreetViewLocation,
-                    pov: {
-                        heading: heading,
-                        pitch: 30
-                    }
-                };
-                var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
+                loadPlaceInfo(marker.title, function(wiki){
+                    infowindow.setContent('<div class="wikiResult">' +marker.title + wiki + '</div><div id="pano"></div>');
+
+                    var panoramaOptions = {
+                        position: nearStreetViewLocation,
+                        pov: {
+                            heading: heading,
+                            pitch: 30
+                        }
+                    };
+                    var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
+                });
 
             } else {
                 infowindow.setContent('<div>' + marker.title + '</div>' +
@@ -703,12 +658,52 @@ function populateInfoWindow(marker, infowindow) {
         infowindow.open(map, marker);
     }
 }
+// this function is for mediawiki AJAX request
+function loadPlaceInfo(search, cb) {
+    var wikiHTML;
 
-// disable 'enter key' for adding-routes button
-// $('.adding-route').on('keyup keypress', function(e) {
-//   var keyCode = e.keyCode || e.which;
-//   if (keyCode === 13) {
-//     e.preventDefault();
-//     return false;
-//   }
-// });
+ $.ajax({
+     asnyc: true,
+     dataType: "jsonp",
+     type: "GET",
+     url: "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&format=json",
+     success: function(wikiResult, status) {
+            var wikiHTML;
+            var resultNum;
+
+            // if there is no results from wiki, send out this message
+            if(wikiResult[1].length === 0) {
+                wikiHTML = '<ul><li>' + 'no results from wiki' + '</li></ul>';
+
+            } else {
+                wikiHTML = '<ul>';
+                // restrict the number of result to 1
+                if(wikiResult[1].length > 2){
+                    resultNum = 2;
+                } else {
+                    resultNum = wikiResult[1].length;
+                }
+                //
+                for (i=0; i<resultNum; i++){
+                    wikiHTML += "<br><li> mediawiki results </li>";
+                    wikiHTML += '<li class="placeName"><h3>'+ i +'. '+ wikiResult[1][i] + '</h3></li>';
+                    wikiHTML += '<li class="placeDesc">' + wikiResult[2][i] + '</li>';
+                }
+                wikiHTML += '</ul>';
+            }
+
+            // self.wikiResult(wikiHTML);
+
+         if (cb) {
+             cb(wikiHTML);
+         }
+     },
+     error: function(result, status, err) {
+         alert("error with connection from mediawiki: " + status);
+         //run only the callback without attempting to parse result due to error
+         if (cb) {
+             cb();
+         }
+     }
+ });
+}
