@@ -678,7 +678,7 @@ function loadPlaceInfo(search, cb) {
             } else {
                 console.log(wikiResult);
                 wikiHTML = '<ul>';
-                wikiHTML += "<br><li> mediawiki results </li>";
+                wikiHTML += "<br><li> (mediawiki results) </li>";
                 wikiHTML += '<li class="placeName"><h3>'+  wikiResult[1][0] + '</h3></li>';
                 wikiHTML += '<li class="placeDesc">' + wikiResult[2][0] + '</li>';
                 wikiHTML += '</ul>';
